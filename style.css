@@ -21,7 +21,7 @@ body {
     overflow-x: hidden;
 }
 
-/* Sistema de Abas/Telas */
+/* Sistema de Telas / Abas */
 .view-section {
     display: none;
     min-height: 100vh;
@@ -30,7 +30,15 @@ body {
 
 .view-section.active {
     display: block;
-    animation: fadeInPage 0.6s ease forwards;
+    animation: fadeInPage 0.4s ease forwards;
+}
+
+/* Força a tela de verificação a centralizar com flexbox corretamente */
+#verify-view.view-section.active {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
 }
 
 @keyframes fadeInPage {
@@ -79,19 +87,7 @@ body {
     50% { filter: drop-shadow(0 0 16px var(--primary-blue)); }
 }
 
-/* Tela de Verificação */
-#verify-view {
-    display: none;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 2rem;
-}
-
-#verify-view.active {
-    display: flex;
-}
-
+/* Cartão de Verificação */
 .auth-card {
     background: var(--bg-card);
     border: 1px solid rgba(0, 85, 255, 0.3);
@@ -163,7 +159,7 @@ body {
     color: var(--text-main);
 }
 
-/* Menu Hambúrguer Otimizado para Mobile (Área de toque ampla) */
+/* Menu Hambúrguer Mobile */
 .menu-btn {
     background: rgba(0, 85, 255, 0.15);
     border: 1px solid rgba(0, 85, 255, 0.4);
@@ -199,7 +195,7 @@ body {
     transform: translateY(-8px) rotate(-45deg);
 }
 
-/* Menu Deslizante em Tela Cheia no Mobile */
+/* Menu Lateral Deslizante */
 .nav-drawer {
     position: fixed;
     top: 0;
@@ -313,7 +309,7 @@ body {
     transform: translateY(-2px);
 }
 
-/* Seta Animada Apontando pro Menu */
+/* Guia e Seta Animada */
 .nav-guide-box {
     display: inline-flex;
     align-items: center;
@@ -338,7 +334,7 @@ body {
     50% { transform: translate(8px, -8px); }
 }
 
-/* Logo Animada Contínua */
+/* Logo Animada */
 .hero-visual {
     flex: 1;
     display: flex;
@@ -389,7 +385,7 @@ body {
     filter: drop-shadow(0 0 20px rgba(0, 85, 255, 0.6));
 }
 
-/* Responsividade Mobile Extrema */
+/* Responsividade Mobile */
 @media (max-width: 850px) {
     .hero {
         flex-direction: column;
