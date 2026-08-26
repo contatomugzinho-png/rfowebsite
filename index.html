@@ -174,39 +174,25 @@
             gap: 1.2rem;
         }
 
-        .btn-primary {
+        /* Botão START único e clean */
+        .btn-start {
             background: var(--primary-blue);
             color: white;
-            padding: 0.9rem 2rem;
+            padding: 1rem 3rem;
             border-radius: 8px;
-            font-weight: 700;
+            font-weight: 800;
             text-decoration: none;
-            letter-spacing: 0.5px;
+            letter-spacing: 2px;
+            font-size: 1rem;
             box-shadow: 0 0 20px rgba(0, 85, 255, 0.5);
             transition: all 0.3s ease;
+            display: inline-block;
         }
 
-        .btn-primary:hover {
+        .btn-start:hover {
             background: #1a66ff;
-            box-shadow: 0 0 30px rgba(0, 85, 255, 0.8);
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-main);
-            padding: 0.9rem 2rem;
-            border-radius: 8px;
-            font-weight: 700;
-            text-decoration: none;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: all 0.3s ease;
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--accent-blue);
-            background: rgba(0, 85, 255, 0.05);
-            transform: translateY(-2px);
+            box-shadow: 0 0 35px rgba(0, 85, 255, 0.9);
+            transform: translateY(-3px);
         }
 
         /* --- Continuous Floating & Rotating Visual --- */
@@ -232,7 +218,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Animação contínua de flutuação */
             animation: continuousFloat 6s ease-in-out infinite;
         }
 
@@ -241,7 +226,6 @@
             50% { transform: translateY(-18px) rotate(2deg); }
         }
 
-        /* Círculo de luz neon rotativo ao fundo da logo */
         .logo-wrapper::before {
             content: '';
             position: absolute;
@@ -283,7 +267,7 @@
                 justify-content: center;
             }
             nav ul {
-                display: none; /* Simplificado para mobile */
+                display: none;
             }
         }
     </style>
@@ -313,14 +297,12 @@
                 <h1>THE PINNACLE OF ROBLOX FOOTBALL</h1>
                 <p>Welcome to the official home of the Roblox Football Organization. We set the global standard for competitive esports soccer on Roblox, prioritizing technical mastery, strict fair play, and an elite community of athletes.</p>
                 <div class="hero-actions">
-                    <a href="#" class="btn-primary">Explore Leagues</a>
-                    <a href="#" class="btn-secondary">Join Community</a>
+                    <a href="#" class="btn-start">START</a>
                 </div>
             </div>
             
             <div class="hero-visual">
                 <div class="logo-wrapper">
-                    <!-- Sua logo original com animações contínuas de rotação e pulsação de luz -->
                     <img src="1000402018.png" alt="RFO Emblem">
                 </div>
             </div>
