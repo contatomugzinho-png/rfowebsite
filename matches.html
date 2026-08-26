@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partidas - RFO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #030712;
+            --bg-card: #0b1120;
+            --primary-blue: #0055ff;
+            --accent-blue: #3b82f6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(0, 85, 255, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            padding: 1.5rem;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 0.3rem;
+            color: #ffffff;
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 0 30px rgba(0, 85, 255, 0.1);
+            margin-bottom: 1.5rem;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        th {
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            background: rgba(0, 85, 255, 0.05);
+        }
+
+        td {
+            color: var(--text-main);
+        }
+
+        .badge-round {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--accent-blue);
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Partidas Agendadas</h1>
+    <p class="section-desc">Acompanhe todos os confrontos dos campeonatos da RFO.</p>
+
+    <div class="card">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Competição / Rodada</th>
+                        <th>Confronto</th>
+                        <th>Horário</th>
+                    </tr>
+                </thead>
+                <tbody id="publicMatchesTable">
+                    <tr>
+                        <td colspan="3" style="text-align:center; color: var(--text-muted);">Carregando partidas...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            loadPublicMatches();
+        });
+
+        function loadPublicMatches() {
+            const table = document.getElementById('publicMatchesTable');
+            let matchesList = JSON.parse(localStorage.getItem('rfo_matches')) || [];
+
+            table.innerHTML = "";
+
+            if (matchesList.length === 0) {
+                table.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var(--text-muted);">Nenhuma partida agendada no momento.</td></tr>`;
+                return;
+            }
+
+            matchesList.forEach(match => {
+                let matchDate = new Date(match.timestamp);
+                let timeFormatted = matchDate.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'}) + ' - ' + matchDate.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+
+                table.innerHTML += `
+                    <tr>
+                        <td>
+                            <b>${match.category}</b><br>
+                            <span class="badge-round">${match.round}</span>
+                        </td>
+                        <td><b>${match.home}</b> vs <b>${match.away}</b></td>
+                        <td>${timeFormatted}</td>
+                    </tr>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
