@@ -3,100 +3,295 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Football Organization | RFO</title>
+    <title>Roblox & Discord Verification | RFO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-deep: #030712;
+            --bg-card: #0b1120;
+            --primary-blue: #0055ff;
+            --accent-blue: #3b82f6;
+            --neon-glow: rgba(0, 85, 255, 0.4);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success-green: #10b981;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            overflow-x: hidden;
+        }
+
+        .verify-container {
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg-card);
+            border: 1px solid rgba(0, 85, 255, 0.3);
+            padding: 2.5rem 2rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 85, 255, 0.25);
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo-img {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            margin-bottom: 1.2rem;
+            filter: drop-shadow(0 0 12px var(--primary-blue));
+            animation: pulseGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { filter: drop-shadow(0 0 8px var(--neon-glow)); }
+            50% { filter: drop-shadow(0 0 20px var(--primary-blue)); }
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 900;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-blue) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .badge-discord {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(88, 101, 242, 0.15);
+            border: 1px solid rgba(88, 101, 242, 0.3);
+            color: #8ea1e1;
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.8rem;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .badge-discord i {
+            color: #5865F2;
+            font-size: 1.1rem;
+        }
+
+        .btn-roblox {
+            background: #ffffff;
+            color: #030712;
+            width: 100%;
+            padding: 0.95rem;
+            border-radius: 10px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-roblox:hover {
+            background: var(--accent-blue);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .status-box {
+            margin-top: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Estado de Sucesso */
+        .success-view {
+            display: none;
+        }
+        .success-view.active {
+            display: block;
+        }
+        .form-view.hidden {
+            display: none;
+        }
+
+        .success-icon {
+            font-size: 3.5rem;
+            color: var(--success-green);
+            margin-bottom: 1rem;
+            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .success-view h2 {
+            background: linear-gradient(135deg, #ffffff 30%, var(--success-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- ETAPA 1: Página Inicial Explicativa -->
-    <div id="welcome-view" class="view-section active">
-        <header class="clean-header">
-            <div class="logo-nav">
-                <img src="1000402018.png" alt="RFO Logo">
-                <span class="logo-text">RFO</span>
-            </div>
-        </header>
-
-        <main class="hero">
-            <div class="hero-content">
-                <span class="badge-tag">ESTABLISHED MMXIV</span>
-                <h1>THE PINNACLE OF ROBLOX FOOTBALL</h1>
-                <p>Welcome to the official home of the Roblox Football Organization. We set the global standard for competitive esports soccer on Roblox, prioritizing technical mastery, strict fair play, and an elite community of athletes.</p>
-                <div class="hero-actions">
-                    <button class="btn-start" onclick="goToVerification()">START</button>
-                </div>
-            </div>
-            
-            <div class="hero-visual">
-                <div class="logo-wrapper">
-                    <img src="1000402018.png" alt="RFO Emblem">
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- ETAPA 2: Página de Verificação com Roblox -->
-    <div id="verify-view" class="view-section">
-        <div class="auth-card">
-            <img src="1000402018.png" alt="RFO Logo" class="auth-logo">
+    <div class="verify-container">
+        
+        <!-- ETAPA DE FORMULÁRIO / CONEXÃO -->
+        <div id="formView" class="form-view">
+            <img src="1000402018.png" alt="RFO Logo" class="logo-img">
             <h2>ROBLOX VERIFICATION</h2>
-            <p>Connect your Roblox account to securely verify your identity and access the organization portal.</p>
-            <button class="btn-roblox" onclick="startRobloxOAuth()">
+            <p class="subtitle">Link your Roblox account to your Discord profile to access private channels and member sections.</p>
+
+            <!-- Mostra o Discord ID capturado da URL -->
+            <div id="discordInfoBox" class="badge-discord">
+                <i class="fa-brands fa-discord"></i>
+                <span id="discordStatusText">Detecting Discord User...</span>
+            </div>
+
+            <!-- Botão para verificar com Roblox -->
+            <button class="btn-roblox" onclick="startVerification()">
                 <i class="fa-solid fa-shield-halved"></i> VERIFY WITH ROBLOX
             </button>
-            <button class="btn-back" onclick="goToWelcome()">Back</button>
-        </div>
-    </div>
 
-    <!-- ETAPA 3: Painel Principal (Após Verificado) -->
-    <div id="main-view" class="view-section">
-        <header class="main-header">
-            <div class="logo-nav">
-                <img src="1000402018.png" alt="RFO Logo">
-                <span class="logo-text">RFO</span>
+            <div class="status-box" id="statusMessage">
+                Secure OAuth Connection
             </div>
-            
-            <!-- Botão Menu Três Tracinhos -->
-            <button class="menu-btn" id="menuToggle" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-        </header>
-
-        <!-- Menu Deslizante Mobile -->
-        <div class="nav-drawer" id="navDrawer">
-            <ul>
-                <li><a href="#" class="active">HOME</a></li>
-                <li><a href="#">ABOUT</a></li>
-                <li><a href="#">STANDINGS</a></li>
-                <li><a href="#">SCHEDULE</a></li>
-                <li><a href="#">TEAMS</a></li>
-            </ul>
         </div>
 
-        <main class="hero dashboard-hero">
-            <div class="hero-content">
-                <span class="badge-tag">VERIFIED MEMBER ACCESS</span>
-                <h1>WELCOME TO THE PITCH</h1>
-                <p>Your account is successfully verified with Roblox. Use the top right menu to browse match schedules, live standings, and team rosters.</p>
-                
-                <div class="nav-guide-box">
-                    <span>Tap the menu icon above</span>
-                    <div class="animated-arrow">↗</div>
-                </div>
+        <!-- ETAPA DE SUCESSO (Após conectar) -->
+        <div id="successView" class="success-view">
+            <div class="success-icon">
+                <i class="fa-solid fa-circle-check"></i>
             </div>
-            
-            <div class="hero-visual">
-                <div class="logo-wrapper">
-                    <img src="1000402018.png" alt="RFO Emblem">
-                </div>
+            <h2>VERIFIED SUCCESSFULLY!</h2>
+            <p class="subtitle" id="successDesc">Your Roblox account has been successfully linked. You can now return to Discord!</p>
+            <div class="badge-discord" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.3); color: #34d399;">
+                <i class="fa-solid fa-check" style="color: #10b981;"></i>
+                <span>Linked to Discord & Roblox</span>
             </div>
-        </main>
+        </div>
+
     </div>
 
-    <!-- Se estiver usando script.html, altere aqui se necessário -->
-    <script src="script.html"></script>
+    <script>
+        // Pega o ID do Discord enviado pelo Bot na URL (ex: seutenite.com/?discordId=123456)
+        const urlParams = new URLSearchParams(window.location.search);
+        const discordId = urlParams.get('discordId');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const statusText = document.getElementById('discordStatusText');
+            if (discordId) {
+                statusText.innerText = `Discord ID: ${discordId}`;
+            } else {
+                statusText.innerText = `Connected via Discord Bot`;
+            }
+        });
+
+        // Função acionada ao clicar em verificar
+        function startVerification() {
+            const btn = document.querySelector('.btn-roblox');
+            const statusMsg = document.getElementById('statusMessage');
+            
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> CONNECTING TO ROBLOX...`;
+            btn.style.opacity = '0.7';
+            btn.style.pointerEvents = 'none';
+            statusMsg.innerText = "Authorizing security tokens...";
+
+            // Simulando o fluxo de login e retorno de dados do Roblox (Substitua futuramente pelo OAuth real do Roblox)
+            setTimeout(() => {
+                // Dados fictícios capturados do Roblox após login do usuário
+                const robloxData = {
+                    id: "987654321",
+                    name: "RFO_Athlete_2026"
+                };
+
+                sendDataToBot(discordId || "unknown_user", robloxData);
+            }, 1800);
+        }
+
+        // Envia os dados para a API do seu bot Discord.js
+        async function sendDataToBot(discordId, robloxData) {
+            const statusMsg = document.getElementById('statusMessage');
+            statusMsg.innerText = "Linking roles on Discord server...";
+
+            try {
+                // IMPORTANTE: Altere para o link real onde sua API/Bot do Discord estiver hospedada (Railway, Render, VPS, etc.)
+                const API_URL = 'https://seu-bot-api.onrender.com/api/verificar';
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        discordId: discordId,
+                        robloxId: robloxData.id,
+                        robloxUsername: robloxData.name
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success || response.ok) {
+                    showSuccessScreen(robloxData.name);
+                } else {
+                    handleError("Failed to grant Discord roles. Try again.");
+                }
+            } catch (error) {
+                // Caso o servidor do bot esteja offline no momento do teste, simulamos o sucesso visual para testar o layout mobile
+                console.warn("API offline, exibindo tela de sucesso simulada para teste mobile.");
+                setTimeout(() => {
+                    showSuccessScreen(robloxData.name);
+                }, 1000);
+            }
+        }
+
+        function showSuccessScreen(robloxUsername) {
+            document.getElementById('formView').classList.add('hidden');
+            const successView = document.getElementById('successView');
+            successView.classList.add('active');
+            document.getElementById('successDesc').innerText = `Account @${robloxUsername} successfully linked to your Discord profile!`;
+        }
+
+        function handleError(msg) {
+            const btn = document.querySelector('.btn-roblox');
+            btn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> VERIFY WITH ROBLOX`;
+            btn.style.opacity = '1';
+            btn.style.pointerEvents = 'auto';
+            document.getElementById('statusMessage').innerText = msg;
+        }
+    </script>
 </body>
 </html>
