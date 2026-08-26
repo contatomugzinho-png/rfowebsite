@@ -1,14 +1,20 @@
 <script>
 // Vai para a tela de verificação
 function goToVerification() {
-    document.getElementById('welcome-view').classList.remove('active');
-    document.getElementById('verify-view').classList.add('active');
+    const welcomeView = document.getElementById('welcome-view');
+    const verifyView = document.getElementById('verify-view');
+
+    if (welcomeView) welcomeView.classList.remove('active');
+    if (verifyView) verifyView.classList.add('active');
 }
 
 // Volta para a tela inicial
 function goToWelcome() {
-    document.getElementById('verify-view').classList.remove('active');
-    document.getElementById('welcome-view').classList.add('active');
+    const verifyView = document.getElementById('verify-view');
+    const welcomeView = document.getElementById('welcome-view');
+
+    if (verifyView) verifyView.classList.remove('active');
+    if (welcomeView) welcomeView.classList.add('active');
 }
 
 // Simula e processa a verificação com o Roblox
@@ -46,10 +52,10 @@ function toggleMenu() {
     }
 }
 
-// Mantém o usuário logado se ele já tiver passado pela verificação antes
+// Inicialização: Removemos o bloqueio automático do localStorage na inicialização 
+// para garantir que você sempre consiga ver e testar a página inicial e de verificação.
 window.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('rfo_verified') === 'true') {
-        showMainDashboard();
-    }
+    // Caso queira resetar o login ao abrir, basta limpar a linha de redirecionamento automático abaixo.
+    // Agora o site sempre inicia na tela de boas-vindas com o botão START!
 });
 </script>
