@@ -98,6 +98,26 @@
             cursor: pointer;
         }
 
+        /* SETA ANIMADA PARA O HAMBÚRGUER */
+        .animated-arrow-container {
+            display: none;
+            position: absolute;
+            top: 15px;
+            right: 70px;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-blue);
+            font-weight: 700;
+            font-size: 0.85rem;
+            animation: bounceArrow 1.5s infinite ease-in-out;
+            z-index: 1100;
+        }
+
+        @keyframes bounceArrow {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-8px); }
+        }
+
         /* MAIN CONTAINER / SECTIONS */
         main {
             flex: 1;
@@ -234,6 +254,12 @@
 </head>
 <body>
 
+    <!-- SETA ANIMADA APONTANDO PARA O MENU HAMBÚRGUER (SÓ APARECE SE VERIFICADO) -->
+    <div id="animatedArrow" class="animated-arrow-container">
+        <span>Navegue por aqui</span>
+        <i class="fa-solid fa-arrow-right"></i>
+    </div>
+
     <!-- HEADER / NAVBAR -->
     <header>
         <div class="nav-brand" onclick="switchTab('home')">
@@ -249,7 +275,6 @@
             <li><a onclick="switchTab('teams')" id="link-teams">Times</a></li>
             <li><a onclick="switchTab('stats')" id="link-stats">Estatísticas</a></li>
             <li><a onclick="switchTab('sheets')" id="link-sheets">Sheets</a></li>
-            <!-- O link do Admin só aparece se um dos e-mails permitidos for inserido -->
             <li id="navAdminItem" style="display: none;"><a onclick="switchTab('admin')" id="link-admin" style="color: var(--accent-blue);"><i class="fa-solid fa-lock"></i> Admin</a></li>
         </ul>
     </header>
@@ -264,10 +289,21 @@
                 <h1>Roblox Football Organization</h1>
                 <p class="section-desc" style="max-width: 500px; margin: 0 auto 2rem auto;">Plataforma oficial de campeonatos, estatísticas e verificação de contas do Discord.</p>
                 
-                <!-- Verificação de Gmail para liberar o Admin automaticamente -->
-                <div style="max-width: 350px; margin: 0 auto; background: rgba(3,7,18,0.5); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border-color);">
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.8rem;">Identifique-se para checar permissões de acesso:</p>
-                    <input type="email" id="userEmailInput" placeholder="Digite seu e-mail cadastrado">
+                <!-- ESTADO A: SE NÃO ESTIVER VERIFICADO -->
+                <div id="notVerifiedSection">
+                    <button class="btn-primary" onclick="startVerificationFlow()"><i class="fa-solid fa-play"></i> Start (Verificar Conta)</button>
+                </div>
+
+                <!-- ESTADO B: SE JÁ ESTIVER VERIFICADO -->
+                <div id="alreadyVerifiedSection" style="display: none; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); padding: 1.5rem; border-radius: 12px; margin-top: 1rem;">
+                    <h3 style="color: var(--success-green); margin-bottom: 0.5rem;"><i class="fa-solid fa-circle-check"></i> Conta Verificada!</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Você já está com sua conta conectada. Utilize o menu hambúrguer no topo da tela para navegar pelas partidas, times, estatísticas e planilhas.</p>
+                </div>
+
+                <!-- CAMPO DE EMAIL ADMINISTRADOR (OPCIONAL) -->
+                <div style="max-width: 350px; margin: 2rem auto 0 auto; background: rgba(3,7,18,0.5); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border-color);">
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.8rem;">Acesso Administrativo:</p>
+                    <input type="email" id="userEmailInput" placeholder="Digite seu e-mail de admin">
                     <button class="btn-primary" style="width: 100%; justify-content: center;" onclick="checkAdminEmail()">Verificar E-mail</button>
                     <div id="emailCheckMsg" style="font-size: 0.8rem; margin-top: 0.8rem;"></div>
                 </div>
@@ -367,19 +403,37 @@
     </main>
 
     <script>
-        // Lista de e-mails autorizados como administradores
         const ADMIN_EMAILS = [
             "janebice3@gmail.com",
             "contatomugzinho@gmail.com"
         ];
 
-        // Checar se já estava logado anteriormente no navegador
         window.addEventListener('DOMContentLoaded', () => {
+            // Verifica Admin
             const savedEmail = localStorage.getItem('rfo_user_email');
             if (ADMIN_EMAILS.includes(savedEmail)) {
                 grantAdminAccess();
             }
+
+            // Verifica se o usuário já passou pela verificação do Roblox anteriormente
+            const isVerified = localStorage.getItem('rfo_verified') === 'true';
+            if (isVerified) {
+                document.getElementById('notVerifiedSection').style.display = 'none';
+                document.getElementById('alreadyVerifiedSection').style.display = 'block';
+                document.getElementById('animatedArrow').style.display = 'flex';
+            }
         });
+
+        // Simula o clique do botão Start / Verificação
+        function startVerificationFlow() {
+            // Aqui você pode colocar o redirecionamento OAuth2 do Roblox que fizemos antes:
+            // window.location.href = "URL_DO_ROBLOX_OAUTH";
+            
+            // Simulação de sucesso para testes visuais imediatos:
+            localStorage.setItem('rfo_verified', 'true');
+            alert("Verificação concluída com sucesso!");
+            location.reload();
+        }
 
         function checkAdminEmail() {
             const inputVal = document.getElementById('userEmailInput').value.trim().toLowerCase();
@@ -389,10 +443,10 @@
                 localStorage.setItem('rfo_user_email', inputVal);
                 grantAdminAccess();
                 msgDiv.style.color = "var(--success-green)";
-                msgDiv.innerText = "E-mail compatível! Aba de Administrador liberada no menu superior.";
+                msgDiv.innerText = "E-mail compatível! Aba de Administrador liberada.";
             } else {
                 msgDiv.style.color = "var(--danger-red)";
-                msgDiv.innerText = "E-mail não autorizado para gerenciar o painel.";
+                msgDiv.innerText = "E-mail não autorizado.";
             }
         }
 
@@ -408,7 +462,6 @@
             switchTab('home');
         }
 
-        // Navegação entre abas
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-menu a').forEach(el => el.classList.remove('active'));
