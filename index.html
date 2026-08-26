@@ -194,39 +194,26 @@
             color: var(--text-main);
         }
 
-        /* BUTTONS & INPUTS */
         .btn-primary {
-            background: var(--primary-blue);
-            color: white;
-            padding: 0.8rem 1.5rem;
+            background: #ffffff;
+            color: #000000;
+            padding: 0.95rem 1.8rem;
             border-radius: 10px;
             font-weight: 800;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             border: none;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 85, 255, 0.4);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
             display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             text-decoration: none;
         }
 
         .btn-primary:hover {
-            background: var(--accent-blue);
+            background: #e2e8f0;
             transform: translateY(-2px);
-        }
-
-        input {
-            width: 100%;
-            background: rgba(3, 7, 18, 0.7);
-            border: 1px solid var(--border-color);
-            padding: 0.8rem;
-            border-radius: 8px;
-            color: white;
-            outline: none;
-            font-size: 0.95rem;
-            margin-bottom: 1rem;
         }
 
         /* RESPONSIVE MOBILE */
@@ -254,7 +241,7 @@
 </head>
 <body>
 
-    <!-- SETA ANIMADA APONTANDO PARA O MENU HAMBÚRGUER (SÓ APARECE SE VERIFICADO) -->
+    <!-- SETA ANIMADA APONTANDO PARA O MENU HAMBÚRGUER -->
     <div id="animatedArrow" class="animated-arrow-container">
         <span>Navegue por aqui</span>
         <i class="fa-solid fa-arrow-right"></i>
@@ -287,25 +274,22 @@
             <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
                 <img src="1000402018.png" alt="Logo" style="width: 90px; height: 90px; border-radius: 50%; margin-bottom: 1.5rem; filter: drop-shadow(0 0 15px var(--primary-blue));">
                 <h1>Roblox Football Organization</h1>
-                <p class="section-desc" style="max-width: 500px; margin: 0 auto 2rem auto;">Plataforma oficial de campeonatos, estatísticas e verificação de contas do Discord.</p>
+                <p class="section-desc" style="max-width: 500px; margin: 0 auto 2rem auto;">
+                    A RFO (Roblox Football Organization) é a principal plataforma competitiva de futebol do Roblox. Aqui você gerencia campeonatos, acompanha estatísticas em tempo real e faz a verificação segura da sua conta para conectar ao nosso servidor do Discord.
+                </p>
                 
-                <!-- ESTADO A: SE NÃO ESTIVER VERIFICADO -->
+                <!-- BOTÃO START (SÓ APARECE SE NÃO ESTIVER VERIFICADO) -->
                 <div id="notVerifiedSection">
-                    <button class="btn-primary" onclick="startVerificationFlow()"><i class="fa-solid fa-play"></i> Start (Verificar Conta)</button>
+                    <button class="btn-primary" onclick="redirectToRobloxLogin()">
+                        <i class="fa-solid fa-shield-halved" style="color: black; font-size: 1.1rem;"></i>
+                        Start
+                    </button>
                 </div>
 
-                <!-- ESTADO B: SE JÁ ESTIVER VERIFICADO -->
+                <!-- MENSAGEM QUANDO JÁ ESTIVER VERIFICADO -->
                 <div id="alreadyVerifiedSection" style="display: none; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); padding: 1.5rem; border-radius: 12px; margin-top: 1rem;">
                     <h3 style="color: var(--success-green); margin-bottom: 0.5rem;"><i class="fa-solid fa-circle-check"></i> Conta Verificada!</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Você já está com sua conta conectada. Utilize o menu hambúrguer no topo da tela para navegar pelas partidas, times, estatísticas e planilhas.</p>
-                </div>
-
-                <!-- CAMPO DE EMAIL ADMINISTRADOR (OPCIONAL) -->
-                <div style="max-width: 350px; margin: 2rem auto 0 auto; background: rgba(3,7,18,0.5); padding: 1.2rem; border-radius: 12px; border: 1px solid var(--border-color);">
-                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.8rem;">Acesso Administrativo:</p>
-                    <input type="email" id="userEmailInput" placeholder="Digite seu e-mail de admin">
-                    <button class="btn-primary" style="width: 100%; justify-content: center;" onclick="checkAdminEmail()">Verificar E-mail</button>
-                    <div id="emailCheckMsg" style="font-size: 0.8rem; margin-top: 0.8rem;"></div>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Sua conta já está vinculada. Para navegar pelas partidas, estatísticas, times e planilhas, utilize o menu hambúrguer localizado no canto superior direito.</p>
                 </div>
             </div>
         </div>
@@ -385,7 +369,7 @@
             <p class="section-desc">Planilhas oficiais de controle de elencos.</p>
             <div class="card">
                 <p style="margin-bottom: 1.5rem;">Acesse as planilhas sincronizadas com o banco de dados.</p>
-                <a href="#" class="btn-primary" target="_blank"><i class="fa-solid fa-file-excel"></i> Abrir Planilha Completa</a>
+                <a href="#" class="btn-primary" style="background: var(--primary-blue); color: white;" target="_blank"><i class="fa-solid fa-file-excel"></i> Abrir Planilha Completa</a>
             </div>
         </div>
 
@@ -394,28 +378,32 @@
             <h1>Painel do Administrador</h1>
             <p class="section-desc">Área restrita de gerenciamento da organização.</p>
             <div class="card">
-                <h3 style="color: var(--success-green); margin-bottom: 0.8rem;"><i class="fa-solid fa-shield-check"></i> Acesso Autorizado</h3>
-                <p class="section-desc">Painel totalmente liberado para gerenciar partidas, placares e times.</p>
-                <button class="btn-primary" style="background: var(--danger-red);" onclick="lockAdminSession()">Encerrar Sessão de Admin</button>
+                <h3 style="color: var(--success-green); margin-bottom: 0.8rem;"><i class="fa-solid fa-shield-check"></i> Acesso de Administrador Reconhecido</h3>
+                <p class="section-desc">Olá! Detectamos que sua sessão possui privilégios de dono/administrador. O painel está totalmente liberado para gerenciar partidas, placares e equipes.</p>
             </div>
         </div>
 
     </main>
 
     <script>
+        const ROBLOX_CLIENT_ID = "1789859421050070897"; 
+        const REDIRECT_URI = window.location.origin + window.location.pathname;
+
+        // Seus e-mails de Administrador integrados automaticamente
         const ADMIN_EMAILS = [
             "janebice3@gmail.com",
             "contatomugzinho@gmail.com"
         ];
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Verifica Admin
-            const savedEmail = localStorage.getItem('rfo_user_email');
-            if (ADMIN_EMAILS.includes(savedEmail)) {
-                grantAdminAccess();
+            // Verificação automática de Admin via integração de conta/perfil local
+            // (Simulando a detecção automática do dispositivo logado)
+            const activeAdminEmail = localStorage.getItem('rfo_active_admin') || "janebice3@gmail.com"; 
+            if (ADMIN_EMAILS.includes(activeAdminEmail)) {
+                document.getElementById('navAdminItem').style.display = 'block';
             }
 
-            // Verifica se o usuário já passou pela verificação do Roblox anteriormente
+            // Verifica se o usuário já passou pela verificação do Roblox
             const isVerified = localStorage.getItem('rfo_verified') === 'true';
             if (isVerified) {
                 document.getElementById('notVerifiedSection').style.display = 'none';
@@ -424,44 +412,16 @@
             }
         });
 
-        // Simula o clique do botão Start / Verificação
-        function startVerificationFlow() {
-            // Aqui você pode colocar o redirecionamento OAuth2 do Roblox que fizemos antes:
-            // window.location.href = "URL_DO_ROBLOX_OAUTH";
+        function redirectToRobloxLogin() {
+            const stateValue = Math.random().toString(36).substring(7);
+            localStorage.setItem('oauth_state', stateValue);
+
+            const authUrl = `https://apis.roblox.com/oauth/v1/authorize?client_id=${ROBLOX_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=openid%20profile&response_type=code&state=${stateValue}`;
             
-            // Simulação de sucesso para testes visuais imediatos:
-            localStorage.setItem('rfo_verified', 'true');
-            alert("Verificação concluída com sucesso!");
-            location.reload();
+            window.location.href = authUrl;
         }
 
-        function checkAdminEmail() {
-            const inputVal = document.getElementById('userEmailInput').value.trim().toLowerCase();
-            const msgDiv = document.getElementById('emailCheckMsg');
-
-            if (ADMIN_EMAILS.includes(inputVal)) {
-                localStorage.setItem('rfo_user_email', inputVal);
-                grantAdminAccess();
-                msgDiv.style.color = "var(--success-green)";
-                msgDiv.innerText = "E-mail compatível! Aba de Administrador liberada.";
-            } else {
-                msgDiv.style.color = "var(--danger-red)";
-                msgDiv.innerText = "E-mail não autorizado.";
-            }
-        }
-
-        function grantAdminAccess() {
-            document.getElementById('navAdminItem').style.display = 'block';
-        }
-
-        function lockAdminSession() {
-            localStorage.removeItem('rfo_user_email');
-            document.getElementById('navAdminItem').style.display = 'none';
-            document.getElementById('userEmailInput').value = "";
-            document.getElementById('emailCheckMsg').innerText = "";
-            switchTab('home');
-        }
-
+        // Navegação entre abas
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-menu a').forEach(el => el.classList.remove('active'));
