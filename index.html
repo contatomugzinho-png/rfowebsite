@@ -16,7 +16,6 @@
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --success-green: #10b981;
-            --danger-red: #ef4444;
             --border-color: rgba(0, 85, 255, 0.25);
         }
 
@@ -154,7 +153,7 @@
             margin-bottom: 2rem;
         }
 
-        /* CARDS & TABLES */
+        /* CARDS */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -162,36 +161,6 @@
             padding: 1.8rem;
             box-shadow: 0 0 30px rgba(0, 85, 255, 0.1);
             margin-bottom: 1.5rem;
-        }
-
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            margin-top: 1rem;
-        }
-
-        th, td {
-            padding: 12px 16px;
-            font-size: 0.9rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        th {
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            background: rgba(0, 85, 255, 0.05);
-        }
-
-        td {
-            color: var(--text-main);
         }
 
         .btn-primary {
@@ -269,16 +238,15 @@
     <!-- MAIN CONTENT -->
     <main>
 
-        <!-- 1. HOME / INÍCIO -->
+        <!-- 1. HOME -->
         <div id="tab-home" class="tab-content active">
             <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
                 <img src="1000402018.png" alt="Logo" style="width: 90px; height: 90px; border-radius: 50%; margin-bottom: 1.5rem; filter: drop-shadow(0 0 15px var(--primary-blue));">
                 <h1>Roblox Football Organization</h1>
                 <p class="section-desc" style="max-width: 500px; margin: 0 auto 2rem auto;">
-                    A RFO (Roblox Football Organization) é a principal plataforma competitiva de futebol do Roblox. Aqui você gerencia campeonatos, acompanha estatísticas em tempo real e faz a verificação segura da sua conta para conectar ao nosso servidor do Discord.
+                    A RFO é a principal plataforma competitiva de futebol do Roblox. Gerencie campeonatos, acompanhe confrontos e verifique sua conta.
                 </p>
                 
-                <!-- BOTÃO START (SÓ APARECE SE NÃO ESTIVER VERIFICADO) -->
                 <div id="notVerifiedSection">
                     <button class="btn-primary" onclick="redirectToRobloxLogin()">
                         <i class="fa-solid fa-shield-halved" style="color: black; font-size: 1.1rem;"></i>
@@ -286,101 +254,36 @@
                     </button>
                 </div>
 
-                <!-- MENSAGEM QUANDO JÁ ESTIVER VERIFICADO -->
                 <div id="alreadyVerifiedSection" style="display: none; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); padding: 1.5rem; border-radius: 12px; margin-top: 1rem;">
                     <h3 style="color: var(--success-green); margin-bottom: 0.5rem;"><i class="fa-solid fa-circle-check"></i> Conta Verificada!</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Sua conta já está vinculada. Para navegar pelas partidas, estatísticas, times e planilhas, utilize o menu hambúrguer localizado no canto superior direito.</p>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Sua conta está vinculada. Utilize o menu hambúrguer no topo para navegar pelas abas.</p>
                 </div>
             </div>
         </div>
 
-        <!-- 2. PARTIDAS -->
+        <!-- 2. PARTIDAS (Puxa matches.html) -->
         <div id="tab-matches" class="tab-content">
-            <h1>Partidas e Confrontos</h1>
-            <p class="section-desc">Acompanhe os próximos confrontos e os resultados recentes.</p>
-            <div class="card">
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Data / Hora</th>
-                                <th>Mandante</th>
-                                <th>Placar</th>
-                                <th>Visitante</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>28/08 - 20:00</td>
-                                <td>Team Alpha</td>
-                                <td><b>VS</b></td>
-                                <td>Team Omega</td>
-                                <td><span style="color: var(--accent-blue);">Agendado</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <iframe src="matches.html" style="width:100%; height:80vh; border:none; background:transparent;"></iframe>
         </div>
 
-        <!-- 3. TIMES -->
+        <!-- 3. TIMES (Puxa teams.html) -->
         <div id="tab-teams" class="tab-content">
-            <h1>Times Participantes</h1>
-            <p class="section-desc">Equipes cadastradas na temporada atual.</p>
-            <div class="card">
-                <p>Nenhum time cadastrado no momento.</p>
-            </div>
+            <iframe src="teams.html" style="width:100%; height:80vh; border:none; background:transparent;"></iframe>
         </div>
 
-        <!-- 4. ESTATÍSTICAS -->
+        <!-- 4. ESTATÍSTICAS (Puxa stats.html) -->
         <div id="tab-stats" class="tab-content">
-            <h1>Estatísticas da Temporada</h1>
-            <p class="section-desc">Ranking dos melhores jogadores.</p>
-            <div class="card">
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Jogador</th>
-                                <th>Time</th>
-                                <th>Gols</th>
-                                <th>Assistências</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>@RobloxPro</td>
-                                <td>Team Alpha</td>
-                                <td>12</td>
-                                <td>5</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <iframe src="stats.html" style="width:100%; height:80vh; border:none; background:transparent;"></iframe>
         </div>
 
-        <!-- 5. SHEETS -->
+        <!-- 5. SHEETS (Puxa sheets.html) -->
         <div id="tab-sheets" class="tab-content">
-            <h1>Spreadsheets & Playersheets</h1>
-            <p class="section-desc">Planilhas oficiais de controle de elencos.</p>
-            <div class="card">
-                <p style="margin-bottom: 1.5rem;">Acesse as planilhas sincronizadas com o banco de dados.</p>
-                <a href="#" class="btn-primary" style="background: var(--primary-blue); color: white;" target="_blank"><i class="fa-solid fa-file-excel"></i> Abrir Planilha Completa</a>
-            </div>
+            <iframe src="sheets.html" style="width:100%; height:80vh; border:none; background:transparent;"></iframe>
         </div>
 
-        <!-- 6. ADMIN / PAINEL -->
+        <!-- 6. ADMIN (Puxa admin.html) -->
         <div id="tab-admin" class="tab-content">
-            <h1>Painel do Administrador</h1>
-            <p class="section-desc">Área restrita de gerenciamento da organização.</p>
-            <div class="card">
-                <h3 style="color: var(--success-green); margin-bottom: 0.8rem;"><i class="fa-solid fa-shield-check"></i> Acesso de Administrador Reconhecido</h3>
-                <p class="section-desc">Olá! Detectamos que sua sessão possui privilégios de dono/administrador. O painel está totalmente liberado para gerenciar partidas, placares e equipes.</p>
-            </div>
+            <iframe src="admin.html" style="width:100%; height:80vh; border:none; background:transparent;"></iframe>
         </div>
 
     </main>
@@ -388,40 +291,34 @@
     <script>
         const ROBLOX_CLIENT_ID = "1789859421050070897"; 
         const REDIRECT_URI = window.location.origin + window.location.pathname;
-
-        // Seus e-mails de Administrador integrados automaticamente
-        const ADMIN_EMAILS = [
-            "janebice3@gmail.com",
-            "contatomugzinho@gmail.com"
-        ];
+        const ADMIN_EMAILS = ["janebice3@gmail.com", "contatomugzinho@gmail.com"];
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Verificação automática de Admin via integração de conta/perfil local
-            // (Simulando a detecção automática do dispositivo logado)
             const activeAdminEmail = localStorage.getItem('rfo_active_admin') || "janebice3@gmail.com"; 
             if (ADMIN_EMAILS.includes(activeAdminEmail)) {
-                document.getElementById('navAdminItem').style.display = 'block';
+                const adminItem = document.getElementById('navAdminItem');
+                if (adminItem) adminItem.style.display = 'block';
             }
 
-            // Verifica se o usuário já passou pela verificação do Roblox
             const isVerified = localStorage.getItem('rfo_verified') === 'true';
             if (isVerified) {
-                document.getElementById('notVerifiedSection').style.display = 'none';
-                document.getElementById('alreadyVerifiedSection').style.display = 'block';
-                document.getElementById('animatedArrow').style.display = 'flex';
+                const notVerified = document.getElementById('notVerifiedSection');
+                const alreadyVerified = document.getElementById('alreadyVerifiedSection');
+                const arrow = document.getElementById('animatedArrow');
+
+                if (notVerified) notVerified.style.display = 'none';
+                if (alreadyVerified) alreadyVerified.style.display = 'block';
+                if (arrow) arrow.style.display = 'flex';
             }
         });
 
         function redirectToRobloxLogin() {
             const stateValue = Math.random().toString(36).substring(7);
             localStorage.setItem('oauth_state', stateValue);
-
             const authUrl = `https://apis.roblox.com/oauth/v1/authorize?client_id=${ROBLOX_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=openid%20profile&response_type=code&state=${stateValue}`;
-            
             window.location.href = authUrl;
         }
 
-        // Navegação entre abas
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-menu a').forEach(el => el.classList.remove('active'));
@@ -433,12 +330,14 @@
                 if (link) link.classList.add('active');
             }
 
-            document.getElementById('navMenu').classList.remove('open');
+            const navMenu = document.getElementById('navMenu');
+            if (navMenu) navMenu.classList.remove('open');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function toggleMenu() {
-            document.getElementById('navMenu').classList.toggle('open');
+            const navMenu = document.getElementById('navMenu');
+            if (navMenu) navMenu.classList.toggle('open');
         }
     </script>
 </body>
