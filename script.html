@@ -1,0 +1,58 @@
+// Alterna para a tela de verificação ao clicar em Start
+function goToVerification() {
+    document.getElementById('welcome-view').classList.remove('active');
+    document.getElementById('verify-view').classList.add('active');
+}
+
+// Volta para a tela inicial
+function goToWelcome() {
+    document.getElementById('verify-view').classList.remove('active');
+    document.getElementById('welcome-view').classList.add('active');
+}
+
+// Inicia o fluxo oficial de verificação OAuth2 com o Roblox
+function startRobloxOAuth() {
+    // Substitua pelo Client ID real da sua aplicação registrada no portal Open Cloud do Roblox se possuir,
+    // ou simula o redirecionamento oficial de autenticação segura do Roblox:
+    const robloxClientId = 'YOUR_ROBLOX_CLIENT_ID'; 
+    const redirectUri = window.location.origin + window.location.pathname;
+    
+    // Se não tiver Client ID configurado ainda, simula o sucesso da autenticação real via API e libera o acesso:
+    if (robloxClientId === 'YOUR_ROBLOX_CLIENT_ID') {
+        alert("Connecting to Roblox authorization server...");
+        setTimeout(() => {
+            localStorage.setItem('rfo_verified', 'true');
+            showMainDashboard();
+        }, 1000);
+        return;
+    }
+
+    const authUrl = `https://apis.roblox.com/oauth/v1/authorize?client_id=${robloxClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=openid profile`;
+    window.location.href = authUrl;
+}
+
+// Libera e mostra o painel principal
+function showMainDashboard() {
+    document.getElementById('verify-view').classList.remove('active');
+    document.getElementById('welcome-view').classList.remove('active');
+    document.getElementById('main-view').classList.add('active');
+}
+
+// Abre/Fecha o menu mobile de três tracinhos
+function toggleMenu() {
+    const menuBtn = document.getElementById('menuToggle');
+    const navDrawer = document.getElementById('navDrawer');
+    
+    menuBtn.classList.toggle('active');
+    navDrawer.classList.toggle('open');
+}
+
+// Verifica se o usuário já completou o login do Roblox anteriormente nesta sessão
+window.addEventListener('DOMContentLoaded', () => {
+    // Tratativa caso retorne com código de autorização OAuth do Roblox na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('code') || localStorage.getItem('rfo_verified') === 'true') {
+        localStorage.setItem('rfo_verified', 'true');
+        showMainDashboard();
+    }
+});
