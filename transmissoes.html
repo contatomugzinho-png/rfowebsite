@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transmissões - RFO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #030712;
+            --bg-card: #0b1120;
+            --primary-blue: #0055ff;
+            --accent-blue: #3b82f6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success-green: #10b981;
+            --danger-red: #ef4444;
+            --border-color: rgba(0, 85, 255, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i { color: var(--primary-blue); }
+
+        .menu-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 1.2rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100%;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .sidebar.active { right: 0; }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1rem;
+        }
+
+        .close-sidebar {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .sidebar-nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(0, 85, 255, 0.15);
+            color: var(--accent-blue);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            z-index: 900;
+            display: none;
+        }
+
+        .overlay.active { display: block; }
+
+        main {
+            flex: 1;
+            padding: 2rem 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 0.3rem;
+            color: #fff;
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 30px rgba(0, 85, 255, 0.1);
+        }
+
+        .btn {
+            background: var(--primary-blue);
+            color: #fff;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn:hover { background: var(--accent-blue); }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .stream-box {
+            background: rgba(0, 85, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><i class="fa-solid fa-video"></i> RFO Transmissões</div>
+        <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
+    </header>
+
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu RFO</h3>
+            <button class="close-sidebar" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sidebar-nav">
+            <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="matches.html"><i class="fa-solid fa-futbol"></i> Partidas</a>
+            <a href="transmissoes.html"><i class="fa-solid fa-video"></i> Transmissões</a>
+            <a href="admin.html"><i class="fa-solid fa-lock"></i> Painel Admin</a>
+            <a href="dono.html"><i class="fa-solid fa-crown"></i> Painel de Dono</a>
+        </div>
+    </div>
+
+    <main>
+        <h1>Transmissões ao Vivo</h1>
+        <p class="section-desc">Acompanhe as transmissões oficiais das partidas da RFO.</p>
+
+        <!-- Botão e Painel de Iniciar Transmissão (Visível apenas para Admin / Media Team / Dono) -->
+        <div id="creatorSection" class="card" style="display: none;">
+            <h3 style="margin-bottom: 1rem;">Iniciar Transmissão</h3>
+            <button class="btn" id="startStreamBtn" onclick="openStreamWizard()">Iniciar Transmissão</button>
+
+            <!-- Wizard de Transmissão -->
+            <div id="streamWizard" style="display: none; margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.5rem;">
+                <div class="form-group">
+                    <label>Selecione uma Partida</label>
+                    <select id="matchSelect">
+                        <!-- Preenchido via JS -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Agendar Transmissão</label>
+                    <select id="scheduleToggle" onchange="toggleScheduleTime()">
+                        <option value="desativado">Desativado</option>
+                        <option value="ativado">Ativado</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="timeInputGroup" style="display: none;">
+                    <label>Horário da Transmissão</label>
+                    <input type="datetime-local" id="streamTimeInput">
+                </div>
+
+                <button class="btn" onclick="publishStream()">Confirmar e Publicar Transmissão</button>
+            </div>
+        </div>
+
+        <!-- Lista de Transmissões Ativas -->
+        <div class="card">
+            <h3 style="margin-bottom: 1rem;">Transmissões em Andamento / Agendadas</h3>
+            <div id="streamsList">
+                <p style="color: var(--text-muted); text-align: center;">Nenhuma transmissão ativa no momento.</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            checkStreamPermission();
+            loadStreams();
+        });
+
+        function checkStreamPermission() {
+            const loggedEmail = promptForEmailCheck(); // Simulação de verificação de permissão armazenada
+            // Vamos verificar se o e-mail está na lista de staff com permissão de Administrador ou Media Team
+            const staffList = JSON.parse(localStorage.getItem('rfo_staff')) || [
+                { email: "contatomugzinho@gmail.com", role: "Dono" }
+            ];
+
+            // Para facilitar o teste, se o usuário logou no Admin ou Dono anteriormente, liberamos:
+            const isAdminOrMedia = localStorage.getItem('rfo_admin_logged') === 'true' || localStorage.getItem('rfo_owner_logged') === 'true';
+
+            if (isAdminOrMedia) {
+                document.getElementById('creatorSection').style.display = 'block';
+            }
+        }
+
+        function promptForEmailCheck() {
+            return true;
+        }
+
+        function openStreamWizard() {
+            const wizard = document.getElementById('streamWizard');
+            wizard.style.display = 'block';
+
+            // Carregar partidas disponíveis
+            const matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
+            const select = document.getElementById('matchSelect');
+            select.innerHTML = "";
+
+            if (matches.length === 0) {
+                select.innerHTML = `<option>Nenhuma partida disponível</option>`;
+                return;
+            }
+
+            matches.forEach((m, index) => {
+                select.innerHTML += `<option value="${index}">${m.category} - ${m.home} vs ${m.away}</option>`;
+            });
+        }
+
+        function toggleScheduleTime() {
+            const val = document.getElementById('scheduleToggle').value;
+            const timeGroup = document.getElementById('timeInputGroup');
+            timeGroup.style.display = val === 'ativado' ? 'block' : 'none';
+        }
+
+        function publishStream() {
+            const matchIndex = document.getElementById('matchSelect').value;
+            const scheduleState = document.getElementById('scheduleToggle').value;
+            const streamTime = document.getElementById('streamTimeInput').value;
+
+            let matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
+            let streams = JSON.parse(localStorage.getItem('rfo_streams')) || [];
+
+            if (!matches[matchIndex]) {
+                alert("Selecione uma partida válida!");
+                return;
+            }
+
+            streams.push({
+                match: matches[matchIndex],
+                scheduled: scheduleState === 'ativado',
+                time: streamTime || "Ao vivo agora"
+            });
+
+            localStorage.setItem('rfo_streams', JSON.stringify(streams));
+            alert("Transmissão iniciada com sucesso!");
+            location.reload();
+        }
+
+        function loadStreams() {
+            const container = document.getElementById('streamsList');
+            let streams = JSON.parse(localStorage.getItem('rfo_streams')) || [];
+
+            if (streams.length === 0) return;
+
+            container.innerHTML = "";
+            streams.forEach(s => {
+                container.innerHTML += `
+                    <div class="stream-box">
+                        <h4>🔴 ${s.match.home} vs ${s.match.away}</h4>
+                        <p style="color:var(--text-muted); font-size:0.85rem; margin-top:4px;">Competição: ${s.match.category}</p>
+                        <p style="color:var(--accent-blue); font-size:0.8rem; margin-top:4px;">Status: ${s.scheduled ? 'Agendado para: ' + s.time : 'Transmitindo ao vivo'}</p>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
