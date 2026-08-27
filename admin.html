@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +13,6 @@
             --accent-blue: #3b82f6;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --success-green: #10b981;
             --danger-red: #ef4444;
             --border-color: rgba(0, 85, 255, 0.25);
         }
@@ -28,14 +27,131 @@
         body {
             background-color: var(--bg-deep);
             color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i { color: var(--primary-blue); }
+
+        .menu-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 1.2rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100%;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
             padding: 1.5rem;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .sidebar.active { right: 0; }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1rem;
+        }
+
+        .close-sidebar {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .sidebar-nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(0, 85, 255, 0.15);
+            color: var(--accent-blue);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            z-index: 900;
+            display: none;
+        }
+
+        .overlay.active { display: block; }
+
+        main {
+            flex: 1;
+            padding: 2rem 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         h1 {
             font-size: 1.8rem;
             font-weight: 900;
             margin-bottom: 0.3rem;
-            color: #ffffff;
+            color: #fff;
         }
 
         .section-desc {
@@ -49,73 +165,69 @@
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 1.5rem;
-            box-shadow: 0 0 30px rgba(0, 85, 255, 0.1);
             margin-bottom: 1.5rem;
+            box-shadow: 0 0 30px rgba(0, 85, 255, 0.1);
         }
 
-        h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.8rem;
-            color: var(--accent-blue);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        textarea, input {
-            width: 100%;
-            background: rgba(3, 7, 18, 0.7);
-            border: 1px solid var(--border-color);
-            padding: 0.8rem;
-            border-radius: 8px;
-            color: white;
-            outline: none;
-            font-size: 0.85rem;
+        .form-group {
             margin-bottom: 1rem;
         }
 
-        textarea {
-            height: 140px;
-            font-family: monospace;
-            resize: vertical;
+        label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
         }
 
-        .btn-primary {
+        input, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        textarea { height: 120px; resize: vertical; }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .btn {
             background: var(--primary-blue);
-            color: #ffffff;
+            color: #fff;
+            border: none;
             padding: 0.8rem 1.5rem;
             border-radius: 8px;
             font-weight: 700;
-            font-size: 0.9rem;
-            border: none;
             cursor: pointer;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-primary:hover {
-            opacity: 0.9;
-            transform: translateY(-1px);
-        }
-
-        .table-container {
+            transition: 0.2s;
             width: 100%;
-            overflow-x: auto;
-            margin-top: 1rem;
         }
+
+        .btn:hover { background: var(--accent-blue); }
+
+        .btn-danger { background: var(--danger-red); }
+        .btn-danger:hover { opacity: 0.8; }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            text-align: left;
+            margin-top: 1rem;
         }
 
         th, td {
-            padding: 10px 12px;
+            padding: 12px;
             font-size: 0.85rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: left;
         }
 
         th {
@@ -123,234 +235,184 @@
             text-transform: uppercase;
             font-size: 0.7rem;
             letter-spacing: 1px;
-            background: rgba(0, 85, 255, 0.05);
         }
 
-        .status-msg {
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-            color: var(--success-green);
+        .auth-container {
+            max-width: 400px;
+            margin: 4rem auto;
+            text-align: center;
         }
     </style>
 </head>
 <body>
 
-    <h1>Painel de Controle do Admin</h1>
-    <p class="section-desc">Gerencie partidas e equipes da RFO em tempo real.</p>
+    <header>
+        <div class="logo"><i class="fa-solid fa-lock"></i> Painel Admin</div>
+        <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
+    </header>
 
-    <!-- SEÇÃO 1: EDITAR / IMPORTAR PARTIDAS -->
-    <div class="card">
-        <h3><i class="fa-solid fa-futbol"></i> 1. Editar e Importar Partidas</h3>
-        <p class="section-desc">Cole o modelo de partidas do Discord abaixo para processar e atualizar o site.</p>
-        <textarea id="discordInput" placeholder="Cole o modelo de partidas do Discord aqui..."></textarea>
-        <button class="btn-primary" onclick="importDiscordMatches()"><i class="fa-solid fa-file-import"></i> Processar e Publicar Partidas</button>
-        <div id="matchStatus" class="status-msg"></div>
-
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Competição</th>
-                        <th>Confronto</th>
-                        <th>Horário</th>
-                        <th>Ação</th>
-                    </tr>
-                </thead>
-                <tbody id="adminMatchesTable">
-                    <tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Nenhuma partida cadastrada ainda.</td></tr>
-                </tbody>
-            </table>
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu RFO</h3>
+            <button class="close-sidebar" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sidebar-nav">
+            <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="matches.html"><i class="fa-solid fa-futbol"></i> Partidas</a>
+            <a href="transmissoes.html"><i class="fa-solid fa-video"></i> Transmissões</a>
+            <a href="admin.html"><i class="fa-solid fa-lock"></i> Painel Admin</a>
+            <a href="dono.html"><i class="fa-solid fa-crown"></i> Painel de Dono</a>
         </div>
     </div>
 
-    <!-- SEÇÃO 2: EDITAR / CADASTRAR TIMES -->
-    <div class="card">
-        <h3><i class="fa-solid fa-shield-halved"></i> 2. Editar e Cadastrar Times</h3>
-        <p class="section-desc">Adicione novas equipes ou gerencie os times existentes no campeonato.</p>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <input type="text" id="teamNameInput" placeholder="Nome do Time (Ex: Real Madrid)" style="flex: 1; min-width: 200px; margin-bottom: 0;">
-            <input type="text" id="teamLeagueInput" placeholder="Liga / Categoria (Ex: La Liga)" style="flex: 1; min-width: 200px; margin-bottom: 0;">
-            <button class="btn-primary" onclick="addNewTeam()"><i class="fa-solid fa-plus"></i> Adicionar Time</button>
+    <main>
+        <!-- Tela de Autenticação por E-mail -->
+        <div id="authScreen" class="auth-container card">
+            <h2>Acesso Restrito</h2>
+            <p style="margin: 1rem 0;">Insira seu e-mail cadastrado para acessar o painel administrativo.</p>
+            <div class="form-group">
+                <input type="email" id="adminEmailInput" placeholder="seu-email@gmail.com">
+            </div>
+            <button class="btn" onclick="verifyAdminLogin()">Entrar</button>
         </div>
-        <div id="teamStatus" class="status-msg"></div>
 
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nome da Equipe</th>
-                        <th>Categoria / Liga</th>
-                        <th>Ação</th>
-                    </tr>
-                </thead>
-                <tbody id="adminTeamsTable">
-                    <tr><td colspan="3" style="text-align:center; color: var(--text-muted);">Nenhum time cadastrado ainda.</td></tr>
-                </tbody>
-            </table>
+        <!-- Conteúdo do Painel Admin (Protegido) -->
+        <div id="adminPanel" style="display: none;">
+            <h1>Gerenciamento de Partidas</h1>
+            <p class="section-desc">Importe dados do Discord ou cadastre partidas manualmente.</p>
+
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">Importar Anúncio do Discord</h3>
+                <div class="form-group">
+                    <textarea id="discordInput" placeholder="Cole o texto bruto do Discord contendo categorias, rodadas e confrontos..."></textarea>
+                </div>
+                <button class="btn" onclick="parseDiscordData()">Processar e Importar Partidas</button>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">Partidas Cadastradas</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Competição</th>
+                            <th>Confronto</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminMatchesTable">
+                        <!-- Preenchido via JS -->
+                    </tbody>
+                </table>
+            </div>
+
+            <button class="btn btn-danger" onclick="logoutAdmin()" style="margin-top: 1rem;">Sair do Painel Admin</button>
         </div>
-    </div>
+    </main>
 
     <script>
-        let matchesList = JSON.parse(localStorage.getItem('rfo_matches')) || [];
-        let teamsList = JSON.parse(localStorage.getItem('rfo_teams')) || [];
-
-        window.addEventListener('DOMContentLoaded', () => {
-            renderAdminMatches();
-            renderAdminTeams();
-        });
-
-        // 1. Lógica de Importação de Partidas Baseada nas Tags de Emoji do Discord
-        function importDiscordMatches() {
-            const text = document.getElementById('discordInput').value;
-            if (!text.trim()) {
-                alert("Cole o texto do Discord primeiro!");
-                return;
-            }
-
-            const lines = text.split('\n');
-            let currentCategory = "RFO Series";
-            let importedCount = 0;
-
-            for (let line of lines) {
-                // Identifica o nome da Liga (ex: **Premier League**, **LA LIGA**, etc.)
-                if (line.includes('**')) {
-                    let catMatch = line.match(/\*\*(.*?)\*\*/);
-                    if (catMatch && catMatch[1].trim().length > 2 && !catMatch[1].includes('RFO GW')) {
-                        currentCategory = catMatch[1].trim();
-                    }
-                    continue;
-                }
-
-                // Processa a linha de confronto que contenha a espada ⚔️
-                if (line.includes('⚔️')) {
-                    // Extrai a rodada (ex: | R3 |)
-                    let roundMatch = line.match(/\|\s*(R[0-9]+)\s*\|/i);
-                    let round = roundMatch ? roundMatch[1].toUpperCase() : "R3";
-
-                    // Extrai todas as tags de emoji personalizadas do Discord no formato <:NOME:ID>
-                    let emojis = line.match(/<:([a-zA-Z0-9]+):[0-9]+>/g);
-                    
-                    let homeTeam = "MANDANTE";
-                    let awayTeam = "VISITANTE";
-
-                    if (emojis && emojis.length >= 2) {
-                        // O primeiro emoji de time geralmente é o mandante (ignorando o primeiro se for o emoji da liga)
-                        // No seu formato: <:+liga+> | R3 | <:+mandante+> ⚔️ <:+visitante+>
-                        // Vamos filtrar pegando os dois últimos emojis da linha ou os que estão colados ao ⚔️
-                        let partsOfLine = line.split('⚔️');
-                        let leftSideEmojis = partsOfLine[0].match(/<:([a-zA-Z0-9]+):[0-9]+>/g);
-                        let rightSideEmojis = partsOfLine[1].match(/<:([a-zA-Z0-9]+):[0-9]+>/g);
-
-                        if (leftSideEmojis && leftSideEmojis.length > 0) {
-                            let matchName = leftSideEmojis[leftSideEmojis.length - 1].match(/<:([a-zA-Z0-9]+):/);
-                            if (matchName) homeTeam = matchName[1].toUpperCase();
-                        }
-
-                        if (rightSideEmojis && rightSideEmojis.length > 0) {
-                            let matchName = rightSideEmojis[0].match(/<:([a-zA-Z0-9]+):/);
-                            if (matchName) awayTeam = matchName[1].toUpperCase();
-                        }
-                    }
-
-                    // Extrai o timestamp do Discord (<t:1787695200:F>)
-                    let timeMatch = line.match(/<t:([0-9]+):[A-Za-z]>/);
-                    let timestamp = timeMatch ? parseInt(timeMatch[1]) * 1000 : Date.now() + 3600000;
-
-                    matchesList.push({
-                        id: Date.now() + Math.random(),
-                        category: currentCategory,
-                        round: round,
-                        home: homeTeam,
-                        away: awayTeam,
-                        timestamp: timestamp
-                    });
-                    importedCount++;
-                }
-            }
-
-            localStorage.setItem('rfo_matches', JSON.stringify(matchesList));
-            renderAdminMatches();
-            document.getElementById('matchStatus').innerText = `Sucesso! ${importedCount} partidas importadas com os times corretos.`;
-            document.getElementById('discordInput').value = "";
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
         }
 
-        function renderAdminMatches() {
-            const table = document.getElementById('adminMatchesTable');
-            table.innerHTML = "";
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('rfo_admin_logged') === 'true') {
+                showAdminPanel();
+            }
+        });
 
-            if (matchesList.length === 0) {
-                table.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Nenhuma partida cadastrada ainda.</td></tr>`;
+        function verifyAdminLogin() {
+            const email = document.getElementById('adminEmailInput').value.trim().toLowerCase();
+            const staffList = JSON.parse(localStorage.getItem('rfo_staff')) || [
+                { email: "contatomugzinho@gmail.com", role: "Dono" }
+            ];
+
+            const member = staffList.find(s => s.email === email && (s.role === 'Dono' || s.role === 'Administrador'));
+
+            if (member) {
+                localStorage.setItem('rfo_admin_logged', 'true');
+                showAdminPanel();
+            } else {
+                alert("Acesso negado! Este e-mail não possui permissão de Administrador.");
+            }
+        }
+
+        function logoutAdmin() {
+            localStorage.removeItem('rfo_admin_logged');
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('authScreen').style.display = 'block';
+        }
+
+        function showAdminPanel() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadAdminMatches();
+        }
+
+        function parseDiscordData() {
+            const text = document.getElementById('discordInput').value;
+            let matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
+            
+            // Parser simples por linhas para exemplo estruturado
+            const lines = text.split('\n');
+            let currentCategory = "Liga Principal";
+            let currentRound = "Rodada 1";
+
+            lines.forEach(line => {
+                if (line.includes('**')) {
+                    currentCategory = line.replace(/\*\*/g, '').trim();
+                }
+                if (line.toLowerCase().includes('rodada')) {
+                    currentRound = line.trim();
+                }
+                if (line.includes(' vs ') || line.includes(' x ')) {
+                    let parts = line.split(/ vs | x /i);
+                    if (parts.length >= 2) {
+                        matches.push({
+                            category: currentCategory,
+                            round: currentRound,
+                            home: parts[0].trim(),
+                            away: parts[1].trim(),
+                            timestamp: Date.now() + 3600000, // +1 hora por padrão
+                            status: "Agendada"
+                        });
+                    }
+                }
+            });
+
+            localStorage.setItem('rfo_matches', JSON.stringify(matches));
+            alert("Partidas importadas com sucesso!");
+            document.getElementById('discordInput').value = "";
+            loadAdminMatches();
+        }
+
+        function loadAdminMatches() {
+            const tbody = document.getElementById('adminMatchesTable');
+            let matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
+            tbody.innerHTML = "";
+
+            if (matches.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var(--text-muted);">Nenhuma partida cadastrada.</td></tr>`;
                 return;
             }
 
-            matchesList.forEach((match, index) => {
-                let matchDate = new Date(match.timestamp);
-                let timeFormatted = matchDate.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'}) + ' - ' + matchDate.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
-
-                table.innerHTML += `
+            matches.forEach((match, index) => {
+                tbody.innerHTML += `
                     <tr>
-                        <td><b>${match.category}</b> (${match.round})</td>
+                        <td><b>${match.category}</b><br><small style="color:var(--text-muted);">${match.round}</small></td>
                         <td>${match.home} vs ${match.away}</td>
-                        <td>${timeFormatted}</td>
-                        <td><button class="btn-primary" style="background: var(--danger-red); padding: 0.3rem 0.6rem; font-size:0.75rem;" onclick="deleteMatch(${index})"><i class="fa-solid fa-trash"></i></button></td>
+                        <td><button class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size:0.75rem; width:auto;" onclick="deleteMatch(${index})">Excluir</button></td>
                     </tr>
                 `;
             });
         }
 
         function deleteMatch(index) {
-            matchesList.splice(index, 1);
-            localStorage.setItem('rfo_matches', JSON.stringify(matchesList));
-            renderAdminMatches();
-        }
-
-        // 2. Lógica de Cadastro e Edição de Times
-        function addNewTeam() {
-            const name = document.getElementById('teamNameInput').value.trim();
-            const league = document.getElementById('teamLeagueInput').value.trim();
-
-            if (!name || !league) {
-                alert("Preencha o nome do time e a liga!");
-                return;
-            }
-
-            teamsList.push({
-                id: Date.now(),
-                name: name,
-                league: league
-            });
-
-            localStorage.setItem('rfo_teams', JSON.stringify(teamsList));
-            renderAdminTeams();
-            document.getElementById('teamNameInput').value = "";
-            document.getElementById('teamLeagueInput').value = "";
-            document.getElementById('teamStatus').innerText = "Time adicionado com sucesso!";
-        }
-
-        function renderAdminTeams() {
-            const table = document.getElementById('adminTeamsTable');
-            table.innerHTML = "";
-
-            if (teamsList.length === 0) {
-                table.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var0(--text-muted);">Nenhum time cadastrado ainda.</td></tr>`;
-                return;
-            }
-
-            teamsList.forEach((team, index) => {
-                table.innerHTML += `
-                    <tr>
-                        <td><b>${team.name}</b></td>
-                        <td>${team.league}</td>
-                        <td><button class="btn-primary" style="background: var(--danger-red); padding: 0.3rem 0.6rem; font-size:0.75rem;" onclick="deleteTeam(${index})"><i class="fa-solid fa-trash"></i></button></td>
-                    </tr>
-                `;
-            });
-        }
-
-        function deleteTeam(index) {
-            teamsList.splice(index, 1);
-            localStorage.setItem('rfo_teams', JSON.stringify(teamsList));
-            renderAdminTeams();
+            let matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
+            matches.splice(index, 1);
+            localStorage.setItem('rfo_matches', JSON.stringify(matches));
+            loadAdminMatches();
         }
     </script>
 </body>
