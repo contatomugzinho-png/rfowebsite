@@ -1,21 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Football Organization | RFO</title>
+    <title>Início - RFO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --bg-deep: #030712;
             --bg-card: #0b1120;
-            --bg-glass: rgba(11, 17, 32, 0.75);
             --primary-blue: #0055ff;
             --accent-blue: #3b82f6;
-            --neon-glow: rgba(0, 85, 255, 0.35);
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --success-green: #10b981;
             --border-color: rgba(0, 85, 255, 0.25);
         }
 
@@ -32,312 +29,220 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden;
         }
 
-        /* HEADER / NAVBAR */
+        /* Navbar e Menu Hambúrguer */
         header {
-            background: var(--bg-glass);
-            backdrop-filter: blur(12px);
+            background: var(--bg-card);
             border-bottom: 1px solid var(--border-color);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            padding: 1rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        .nav-brand {
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i {
+            color: var(--primary-blue);
+        }
+
+        .menu-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 1.2rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .menu-btn:hover {
+            background: rgba(0, 85, 255, 0.1);
+        }
+
+        /* Menu Lateral Deslizante */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100%;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .sidebar.active {
+            right: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1rem;
+        }
+
+        .close-sidebar {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .sidebar-nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
             display: flex;
             align-items: center;
             gap: 12px;
-            font-weight: 900;
-            font-size: 1.2rem;
-            letter-spacing: 0.5px;
-            color: #ffffff;
-            cursor: pointer;
+            transition: 0.2s;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
         }
 
-        .nav-brand img {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            filter: drop-shadow(0 0 8px var(--primary-blue));
-        }
-
-        .nav-menu {
-            display: flex;
-            gap: 1.5rem;
-            list-style: none;
-            align-items: center;
-        }
-
-        .nav-menu li a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: color 0.2s;
-            cursor: pointer;
-        }
-
-        .nav-menu li a:hover, .nav-menu li a.active {
+        .sidebar-nav a:hover {
+            background: rgba(0, 85, 255, 0.15);
             color: var(--accent-blue);
-            text-shadow: 0 0 10px var(--neon-glow);
+            border-color: var(--border-color);
         }
 
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        /* SETA ANIMADA PARA O HAMBÚRGUER */
-        .animated-arrow-container {
-            display: none;
-            position: absolute;
-            top: 15px;
-            right: 70px;
-            align-items: center;
-            gap: 8px;
-            color: var(--accent-blue);
-            font-weight: 700;
-            font-size: 0.85rem;
-            animation: bounceArrow 1.5s infinite ease-in-out;
-            z-index: 1100;
-        }
-
-        @keyframes bounceArrow {
-            0%, 100% { transform: translateX(0); }
-            50% { transform: translateX(-8px); }
-        }
-
-        /* MAIN CONTAINER / SECTIONS */
-        main {
-            flex: 1;
-            padding: 2.5rem 2rem;
-            max-width: 1200px;
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            margin: 0 auto;
-        }
-
-        .tab-content {
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            z-index: 900;
             display: none;
-            animation: fadeIn 0.4s ease forwards;
         }
 
-        .tab-content.active {
+        .overlay.active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Conteúdo Principal */
+        main {
+            flex: 1;
+            padding: 2rem 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            text-align: center;
+        }
+
+        .hero {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3rem 1.5rem;
+            box-shadow: 0 0 40px rgba(0, 85, 255, 0.15);
+            margin-top: 2rem;
         }
 
         h1 {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 900;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
             color: #ffffff;
         }
 
-        .section-desc {
+        p {
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: 1rem;
             margin-bottom: 2rem;
-        }
-
-        /* CARDS */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 1.8rem;
-            box-shadow: 0 0 30px rgba(0, 85, 255, 0.1);
-            margin-bottom: 1.5rem;
+            line-height: 1.6;
         }
 
         .btn-primary {
-            background: #ffffff;
-            color: #000000;
-            padding: 0.95rem 1.8rem;
-            border-radius: 10px;
-            font-weight: 800;
-            font-size: 0.95rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.15);
-            display: inline-flex;
-            align-items: center;
-            gap: 12px;
+            display: inline-block;
+            background: var(--primary-blue);
+            color: #fff;
+            padding: 0.8rem 2rem;
+            border-radius: 12px;
             text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            box-shadow: 0 4px 20px rgba(0, 85, 255, 0.4);
         }
 
         .btn-primary:hover {
-            background: #e2e8f0;
+            background: var(--accent-blue);
             transform: translateY(-2px);
-        }
-
-        /* RESPONSIVE MOBILE */
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-                flex-direction: column;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                width: 100%;
-                background: var(--bg-glass);
-                padding: 1.5rem;
-                border-bottom: 1px solid var(--border-color);
-                text-align: center;
-            }
-            .nav-menu.open {
-                display: flex;
-            }
-            .menu-toggle {
-                display: block;
-            }
         }
     </style>
 </head>
 <body>
 
-    <!-- SETA ANIMADA APONTANDO PARA O MENU HAMBÚRGUER -->
-    <div id="animatedArrow" class="animated-arrow-container">
-        <span>Navegue por aqui</span>
-        <i class="fa-solid fa-arrow-right"></i>
-    </div>
-
-    <!-- HEADER / NAVBAR -->
     <header>
-        <div class="nav-brand" onclick="switchTab('home')">
-            <img src="1000402018.png" alt="RFO Logo">
-            <span>RFO ESPORTS</span>
-        </div>
-        <button class="menu-toggle" onclick="toggleMenu()">
-            <i class="fa-solid fa-bars"></i>
-        </button>
-        <ul class="nav-menu" id="navMenu">
-            <li><a onclick="switchTab('home')" class="active" id="link-home">Home</a></li>
-            <li><a onclick="switchTab('matches')" id="link-matches">Partidas</a></li>
-            <li><a onclick="switchTab('teams')" id="link-teams">Times</a></li>
-            <li><a onclick="switchTab('stats')" id="link-stats">Estatísticas</a></li>
-            <li><a onclick="switchTab('sheets')" id="link-sheets">Sheets</a></li>
-            <li id="navAdminItem" style="display: none;"><a onclick="switchTab('admin')" id="link-admin" style="color: var(--accent-blue);"><i class="fa-solid fa-lock"></i> Admin</a></li>
-        </ul>
+        <div class="logo"><i class="fa-solid fa-shield-halayed"></i> RFO Management</div>
+        <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
     </header>
 
-    <!-- MAIN CONTENT -->
+    <!-- Menu Lateral (Hambúrguer) -->
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu RFO</h3>
+            <button class="close-sidebar" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sidebar-nav">
+            <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="matches.html"><i class="fa-solid fa-futbol"></i> Partidas</a>
+            <a href="transmissoes.html"><i class="fa-solid fa-video"></i> Transmissões</a>
+            <a href="admin.html"><i class="fa-solid fa-lock"></i> Painel Admin</a>
+            <a href="dono.html"><i class="fa-solid fa-crown"></i> Painel de Dono</a>
+        </div>
+    </div>
+
     <main>
-
-        <!-- 1. HOME -->
-        <div id="tab-home" class="tab-content active">
-            <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
-                <img src="1000402018.png" alt="Logo" style="width: 90px; height: 90px; border-radius: 50%; margin-bottom: 1.5rem; filter: drop-shadow(0 0 15px var(--primary-blue));">
-                <h1>Roblox Football Organization</h1>
-                <p class="section-desc" style="max-width: 500px; margin: 0 auto 2rem auto;">
-                    A RFO é a principal plataforma competitiva de futebol do Roblox. Gerencie campeonatos, acompanhe confrontos e verifique sua conta.
-                </p>
-                
-                <div id="notVerifiedSection">
-                    <button class="btn-primary" onclick="redirectToRobloxLogin()">
-                        <i class="fa-solid fa-shield-halved" style="color: black; font-size: 1.1rem;"></i>
-                        Start
-                    </button>
-                </div>
-
-                <div id="alreadyVerifiedSection" style="display: none; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); padding: 1.5rem; border-radius: 12px; margin-top: 1rem;">
-                    <h3 style="color: var(--success-green); margin-bottom: 0.5rem;"><i class="fa-solid fa-circle-check"></i> Conta Verificada!</h3>
-                    <p style="font-size: 0.9rem; color: var(--text-muted);">Sua conta está vinculada. Utilize o menu hambúrguer no topo para navegar pelas abas.</p>
-                </div>
-            </div>
+        <div class="hero">
+            <h1>Bem-vindo à RFO</h1>
+            <p>Gerencie ligas, acompanhe partidas ao vivo, controle transmissões e gerencie sua organização de forma 100% profissional e automatizada.</p>
+            <a href="matches.html" class="btn-primary">Ver Partidas da Rodada</a>
         </div>
-
-        <!-- 2. PARTIDAS (Puxa matches.html) -->
-        <div id="tab-matches" class="tab-content">
-            <iframe src="matches.html" style="width:100%; height:80vh; border:none; background:transparent;"></iframe>
-        </div>
-
-        <!-- 3. TIMES (Puxa teams.html) -->
-        <div id="tab-teams" class="tab-content">
-            <iframe src="teams.html" style="width:100%; height:80vh; border:none; background:transparent;"></iframe>
-        </div>
-
-        <!-- 4. ESTATÍSTICAS (Puxa stats.html) -->
-        <div id="tab-stats" class="tab-content">
-            <iframe src="stats.html" style="width:100%; height:80vh; border:none; background:transparent;"></iframe>
-        </div>
-
-        <!-- 5. SHEETS (Puxa sheets.html) -->
-        <div id="tab-sheets" class="tab-content">
-            <iframe src="sheets.html" style="width:100%; height:80vh; border:none; background:transparent;"></iframe>
-        </div>
-
-        <!-- 6. ADMIN (Puxa admin.html) -->
-        <div id="tab-admin" class="tab-content">
-            <iframe src="admin.html" style="width:100%; height:80vh; border:none; background:transparent;"></iframe>
-        </div>
-
     </main>
 
     <script>
-        const ROBLOX_CLIENT_ID = "1789859421050070897"; 
-        const REDIRECT_URI = window.location.origin + window.location.pathname;
-        const ADMIN_EMAILS = ["janebice3@gmail.com", "contatomugzinho@gmail.com"];
-
-        window.addEventListener('DOMContentLoaded', () => {
-            const activeAdminEmail = localStorage.getItem('rfo_active_admin') || "janebice3@gmail.com"; 
-            if (ADMIN_EMAILS.includes(activeAdminEmail)) {
-                const adminItem = document.getElementById('navAdminItem');
-                if (adminItem) adminItem.style.display = 'block';
-            }
-
-            const isVerified = localStorage.getItem('rfo_verified') === 'true';
-            if (isVerified) {
-                const notVerified = document.getElementById('notVerifiedSection');
-                const alreadyVerified = document.getElementById('alreadyVerifiedSection');
-                const arrow = document.getElementById('animatedArrow');
-
-                if (notVerified) notVerified.style.display = 'none';
-                if (alreadyVerified) alreadyVerified.style.display = 'block';
-                if (arrow) arrow.style.display = 'flex';
-            }
-        });
-
-        function redirectToRobloxLogin() {
-            const stateValue = Math.random().toString(36).substring(7);
-            localStorage.setItem('oauth_state', stateValue);
-            const authUrl = `https://apis.roblox.com/oauth/v1/authorize?client_id=${ROBLOX_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&scope=openid%20profile&response_type=code&state=${stateValue}`;
-            window.location.href = authUrl;
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-menu a').forEach(el => el.classList.remove('active'));
-
-            const targetTab = document.getElementById('tab-' + tabId);
-            if (targetTab) {
-                targetTab.classList.add('active');
-                const link = document.getElementById('link-' + tabId);
-                if (link) link.classList.add('active');
-            }
-
-            const navMenu = document.getElementById('navMenu');
-            if (navMenu) navMenu.classList.remove('open');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
         function toggleMenu() {
-            const navMenu = document.getElementById('navMenu');
-            if (navMenu) navMenu.classList.toggle('open');
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
         }
     </script>
 </body>
