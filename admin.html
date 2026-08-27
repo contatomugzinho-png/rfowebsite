@@ -62,7 +62,7 @@
         main {
             flex: 1;
             padding: 2.5rem 1.5rem;
-            max-width: 700px;
+            max-width: 750px;
             margin: 0 auto;
             width: 100%;
             display: flex;
@@ -88,7 +88,14 @@
         h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: #fff; display: flex; align-items: center; gap: 8px; }
         p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
 
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
         .form-group { margin-bottom: 1.2rem; }
+        .form-group.full { grid-column: span 2; }
 
         label {
             display: block;
@@ -100,7 +107,7 @@
             font-weight: 700;
         }
 
-        input {
+        input, select {
             width: 100%;
             padding: 0.9rem;
             background: rgba(255, 255, 255, 0.03);
@@ -111,7 +118,7 @@
             transition: 0.2s;
         }
 
-        input:focus {
+        input:focus, select:focus {
             outline: none;
             border-color: var(--accent-blue);
             box-shadow: 0 0 10px rgba(0, 85, 255, 0.3);
@@ -128,7 +135,7 @@
             font-size: 1rem;
             border: none;
             cursor: pointer;
-            margin-top: 1.5rem;
+            margin-top: 1rem;
             transition: 0.3s;
             box-shadow: 0 4px 20px rgba(0, 85, 255, 0.4);
         }
@@ -170,10 +177,7 @@
             transition: 0.2s;
         }
 
-        .btn-delete:hover {
-            background: #ef4444;
-            color: #fff;
-        }
+        .btn-delete:hover { background: #ef4444; color: #fff; }
     </style>
 </head>
 <body>
@@ -184,78 +188,96 @@
     </header>
 
     <main>
-        <!-- Card de Cadastro -->
         <div class="card">
-            <h1>Painel Administrativo</h1>
-            <p>Cadastre novas partidas oficiais para exibição imediata na liga.</p>
+            <h1>Cadastrar Partida</h1>
+            <p>Adicione os confrontos detalhados por liga, rodada, emojis do Discord e horário.</p>
 
-            <div class="form-group">
-                <label>Categoria / Competição</label>
-                <input type="text" id="matchCategory" placeholder="Ex: Série A - Rodada 1">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Liga / Competição</label>
+                    <select id="matchLeague">
+                        <option value="Premier League">Premier League</option>
+                        <option value="LA LIGA">LA LIGA</option>
+                        <option value="SERIE A">SERIE A</option>
+                        <option value="BUNDESLIGA">BUNDESLIGA</option>
+                        <option value="LIGUE ONE">LIGUE ONE</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Rodada</label>
+                    <input type="text" id="matchRound" placeholder="Ex: R3">
+                </div>
+
+                <div class="form-group">
+                    <label>Mandante (Emoji Discord / Nome)</label>
+                    <input type="text" id="matchHome" placeholder="Ex: <:CHE:1526260471903289527> Chelsea">
+                </div>
+
+                <div class="form-group">
+                    <label>Visitante (Emoji Discord / Nome)</label>
+                    <input type="text" id="matchAway" placeholder="Ex: <:LIV:1526260240042033154> Liverpool">
+                </div>
+
+                <div class="form-group full">
+                    <label>Data e Horário do Jogo</label>
+                    <input type="datetime-local" id="matchDateTime">
+                </div>
             </div>
 
-            <div class="form-group">
-                <label>Time Mandante (Home)</label>
-                <input type="text" id="matchHome" placeholder="Nome do time da casa">
-            </div>
-
-            <div class="form-group">
-                <label>Time Visitante (Away)</label>
-                <input type="text" id="matchAway" placeholder="Nome do time visitante">
-            </div>
-
-            <button class="btn-submit" onclick="registerMatch()">Salvar e Registrar Partida</button>
+            <button class="btn-submit" onclick="registerMatch()">Salvar Partida</button>
         </div>
 
-        <!-- Card de Gerenciamento / Exclusão de Partidas -->
         <div class="card">
-            <h2><i class="fa-solid fa-pen-to-square"></i> Gerenciar Partidas Salvas</h2>
-            <p>Visualize ou remova partidas já cadastradas no sistema.</p>
-            
-            <div class="manage-list" id="manageMatchesList">
-                <!-- Lista injetada via JavaScript -->
-            </div>
+            <h2><i class="fa-solid fa-pen-to-square"></i> Gerenciar Partidas</h2>
+            <p>Remova partidas cadastradas incorretamente.</p>
+            <div class="manage-list" id="manageMatchesList"></div>
         </div>
     </main>
 
     <script>
         window.addEventListener('DOMContentLoaded', () => {
-            // Verifica se passou pela autenticação do Roblox
             if (localStorage.getItem('rfo_roblox_verified') !== 'true') {
-                alert("Acesso negado! Conecte sua conta do Roblox primeiro.");
                 window.location.href = "index.html";
                 return;
             }
-
             renderManageList();
         });
 
         function registerMatch() {
-            const category = document.getElementById('matchCategory').value.trim();
+            const league = document.getElementById('matchLeague').value;
+            const round = document.getElementById('matchRound').value.trim();
             const home = document.getElementById('matchHome').value.trim();
             const away = document.getElementById('matchAway').value.trim();
+            const dateTimeVal = document.getElementById('matchDateTime').value;
 
-            if (!category || !home || !away) {
-                alert("Por favor, preencha todos os campos da partida!");
+            if (!round || !home || !away || !dateTimeVal) {
+                alert("Por favor, preencha todos os campos!");
                 return;
             }
+
+            // Converte a data selecionada para timestamp Unix do Discord (<t:TIMESTAMP:F>)
+            const dateObj = new Date(dateTimeVal);
+            const unixTimestamp = Math.floor(dateObj.getTime() / 1000);
 
             let matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
 
             matches.push({
-                category: category,
+                league: league,
+                round: round,
                 home: home,
                 away: away,
-                status: "Agendado"
+                timestamp: unixTimestamp,
+                dateTimeFormatted: dateObj.toLocaleString('pt-BR')
             });
 
             localStorage.setItem('rfo_matches', JSON.stringify(matches));
-
             alert("Partida cadastrada com sucesso!");
-            
-            document.getElementById('matchCategory').value = "";
+
+            document.getElementById('matchRound').value = "";
             document.getElementById('matchHome').value = "";
             document.getElementById('matchAway').value = "";
+            document.getElementById('matchDateTime').value = "";
 
             renderManageList();
         }
@@ -265,19 +287,18 @@
             let matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
 
             if (matches.length === 0) {
-                listContainer.innerHTML = `<p style="color: var(--text-muted); text-align: center; margin: 0;">Nenhuma partida cadastrada para gerenciar.</p>`;
+                listContainer.innerHTML = `<p style="color: var(--text-muted); text-align: center; margin: 0;">Nenhuma partida cadastrada.</p>`;
                 return;
             }
 
             listContainer.innerHTML = "";
-
             matches.forEach((match, index) => {
                 const item = document.createElement('div');
                 item.className = 'manage-item';
                 item.innerHTML = `
                     <div class="match-info">
-                        <b>${match.home} vs ${match.away}</b>
-                        <span>${match.category}</span>
+                        <b>[${match.league}] ${match.round} - ${match.home} x ${match.away}</b>
+                        <span>Horário: ${match.dateTimeFormatted}</span>
                     </div>
                     <button class="btn-delete" onclick="deleteMatch(${index})"><i class="fa-solid fa-trash"></i> Excluir</button>
                 `;
