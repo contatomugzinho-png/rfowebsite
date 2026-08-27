@@ -13,6 +13,8 @@
             --accent-blue: #3b82f6;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
+            --success-green: #10b981;
+            --warning-yellow: #f59e0b;
             --border-color: rgba(0, 85, 255, 0.25);
         }
 
@@ -83,17 +85,36 @@
         .badge-round {
             background: rgba(59, 130, 246, 0.15);
             color: var(--accent-blue);
-            padding: 0.3rem 0.6rem;
+            padding: 0.2rem 0.5rem;
             border-radius: 6px;
             font-weight: 700;
+            font-size: 0.7rem;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.7rem;
+            border-radius: 6px;
             font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .status-upcoming { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
+        .status-live { background: rgba(16, 185, 129, 0.15); color: var(--success-green); animation: pulse 1.5s infinite; }
+        .status-finished { background: rgba(245, 158, 11, 0.15); color: var(--warning-yellow); }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
         }
     </style>
 </head>
 <body>
 
     <h1>Partidas Agendadas</h1>
-    <p class="section-desc">Acompanhe todos os confrontos dos campeonatos da RFO.</p>
+    <p class="section-desc">Acompanhe todos os confrontos e o status dos jogos da RFO.</p>
 
     <div class="card">
         <div class="table-container">
@@ -103,11 +124,12 @@
                         <th>Competição / Rodada</th>
                         <th>Confronto</th>
                         <th>Horário</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody id="publicMatchesTable">
                     <tr>
-                        <td colspan="3" style="text-align:center; color: var(--text-muted);">Carregando partidas...</td>
+                        <td colspan="4" style="text-align:center; color: var(--text-muted);">Carregando partidas...</td>
                     </tr>
                 </tbody>
             </table>
@@ -126,13 +148,19 @@
             table.innerHTML = "";
 
             if (matchesList.length === 0) {
-                table.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var(--text-muted);">Nenhuma partida agendada no momento.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Nenhuma partida agendada no momento.</td></tr>`;
                 return;
             }
 
             matchesList.forEach(match => {
                 let matchDate = new Date(match.timestamp);
                 let timeFormatted = matchDate.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'}) + ' - ' + matchDate.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+
+                let statusText = match.status || "Agendada";
+                let statusClass = "status-upcoming";
+                
+                if (statusText === "Ao Vivo") statusClass = "status-live";
+                if (statusText === "Encerrada") statusClass = "status-finished";
 
                 table.innerHTML += `
                     <tr>
@@ -142,6 +170,7 @@
                         </td>
                         <td><b>${match.home}</b> vs <b>${match.away}</b></td>
                         <td>${timeFormatted}</td>
+                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                     </tr>
                 `;
             });
