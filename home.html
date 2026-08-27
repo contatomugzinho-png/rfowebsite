@@ -29,6 +29,12 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            animation: fadeInBody 0.5s ease-in-out;
+        }
+
+        @keyframes fadeInBody {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         header {
@@ -41,6 +47,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            backdrop-filter: blur(10px);
         }
 
         .logo {
@@ -62,25 +69,25 @@
             padding: 0.5rem 0.8rem;
             border-radius: 8px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
         }
 
-        .menu-btn:hover { background: rgba(0, 85, 255, 0.1); }
+        .menu-btn:hover { background: rgba(0, 85, 255, 0.15); transform: scale(1.05); }
 
         .sidebar {
             position: fixed;
             top: 0;
-            right: -280px;
-            width: 280px;
+            right: -300px;
+            width: 300px;
             height: 100%;
             background: var(--bg-card);
             border-left: 1px solid var(--border-color);
             z-index: 1000;
-            transition: right 0.3s ease;
+            transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex;
             flex-direction: column;
             padding: 1.5rem;
-            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
+            box-shadow: -15px 0 40px rgba(0, 0, 0, 0.8);
         }
 
         .sidebar.active { right: 0; }
@@ -100,7 +107,9 @@
             color: var(--text-muted);
             font-size: 1.2rem;
             cursor: pointer;
+            transition: color 0.2s;
         }
+        .close-sidebar:hover { color: #fff; }
 
         .sidebar-nav {
             display: flex;
@@ -111,8 +120,8 @@
         .sidebar-nav a {
             color: var(--text-main);
             text-decoration: none;
-            padding: 0.8rem 1rem;
-            border-radius: 8px;
+            padding: 0.9rem 1rem;
+            border-radius: 10px;
             font-weight: 600;
             font-size: 0.95rem;
             display: flex;
@@ -120,13 +129,14 @@
             gap: 12px;
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.03);
-            transition: 0.2s;
+            transition: all 0.2s ease;
         }
 
         .sidebar-nav a:hover {
             background: rgba(0, 85, 255, 0.15);
             color: var(--accent-blue);
             border-color: var(--border-color);
+            transform: translateX(4px);
         }
 
         .overlay {
@@ -136,16 +146,18 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(3px);
+            backdrop-filter: blur(4px);
             z-index: 900;
             display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
-        .overlay.active { display: block; }
+        .overlay.active { display: block; opacity: 1; }
 
         main {
             flex: 1;
-            padding: 2rem 1.5rem;
+            padding: 2.5rem 1.5rem;
             max-width: 800px;
             margin: 0 auto;
             width: 100%;
@@ -155,10 +167,15 @@
         .hero {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 3rem 1.5rem;
-            box-shadow: 0 0 40px rgba(0, 85, 255, 0.15);
-            margin-top: 2rem;
+            border-radius: 24px;
+            padding: 3.5rem 2rem;
+            box-shadow: 0 0 50px rgba(0, 85, 255, 0.12);
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
@@ -166,6 +183,7 @@
             font-weight: 900;
             margin-bottom: 1rem;
             color: #ffffff;
+            letter-spacing: -0.5px;
         }
 
         p {
@@ -179,25 +197,37 @@
             display: inline-block;
             background: var(--primary-blue);
             color: #fff;
-            padding: 0.8rem 2rem;
+            padding: 0.9rem 2.2rem;
             border-radius: 12px;
             text-decoration: none;
             font-weight: 700;
             font-size: 0.95rem;
-            transition: 0.2s;
+            transition: all 0.3s ease;
             box-shadow: 0 4px 20px rgba(0, 85, 255, 0.4);
         }
 
         .btn-primary:hover {
             background: var(--accent-blue);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 85, 255, 0.6);
+        }
+
+        .user-badge {
+            margin-top: 1.5rem;
+            display: inline-block;
+            padding: 0.4rem 1rem;
+            background: rgba(0, 85, 255, 0.1);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--accent-blue);
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo"><i class="fa-solid fa-shield-halayed"></i> RFO Hub</div>
+        <div class="logo"><i class="fa-solid fa-shield-halved"></i> RFO Hub</div>
         <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
     </header>
 
@@ -211,8 +241,14 @@
             <a href="home.html"><i class="fa-solid fa-house"></i> Início</a>
             <a href="matches.html"><i class="fa-solid fa-futbol"></i> Partidas</a>
             <a href="transmissoes.html"><i class="fa-solid fa-video"></i> Transmissões</a>
-            <a href="admin.html"><i class="fa-solid fa-lock"></i> Painel Admin</a>
-            <a href="dono.html"><i class="fa-solid fa-crown"></i> Painel de Dono</a>
+            
+            <!-- Aparece apenas se o e-mail logado for o do Administrador -->
+            <a href="admin.html" id="navAdmin" style="display: none;"><i class="fa-solid fa-lock"></i> Painel Admin</a>
+            
+            <!-- Aparece apenas se o e-mail logado for o do Dono -->
+            <a href="dono.html" id="navDono" style="display: none;"><i class="fa-solid fa-crown"></i> Painel de Dono</a>
+            
+            <a href="#" onclick="logoutUser()" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.2); margin-top: 1rem;"><i class="fa-solid fa-right-from-bracket"></i> Sair / Trocar Conta</a>
         </div>
     </div>
 
@@ -221,21 +257,62 @@
             <h1>Painel Principal RFO</h1>
             <p>Conta verificada com sucesso! Navegue pelas opções do menu lateral para acompanhar partidas, transmissões e gerenciar a organização.</p>
             <a href="matches.html" class="btn-primary">Ver Partidas da Rodada</a>
+            <div id="userInfoBadge" class="user-badge"></div>
         </div>
     </main>
 
     <script>
+        // E-mails autorizados específicos
+        const ADMIN_EMAIL = "admin@rfo.com"; // Substitua pelo e-mail exato do adm
+        const DONO_EMAIL = "dono@rfo.com";   // Substitua pelo e-mail exato do dono
+
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
         }
 
-        // Segurança simples: se não estiver verificado, chuta de volta para o index
         window.addEventListener('DOMContentLoaded', () => {
+            // Verifica se passou pela verificação do Roblox
             if (localStorage.getItem('rfo_roblox_verified') !== 'true') {
                 window.location.href = "index.html";
+                return;
+            }
+
+            // Inicializa partidas padrão caso o banco local esteja vazio (Corrige o bug de não salvar/exibir)
+            if (!localStorage.getItem('rfo_matches')) {
+                const initialMatches = [
+                    { category: "Série A", home: "Flamengo RFO", away: "Vasco RFO", status: "Agendado" },
+                    { category: "Série A", home: "Corinthians RFO", away: "Palmeiras RFO", status: "Agendado" }
+                ];
+                localStorage.setItem('rfo_matches', JSON.stringify(initialMatches));
+            }
+
+            // Simulação de verificação de login por e-mail (Você pode alterar a chave 'rfo_logged_email' ao logar)
+            let loggedEmail = localStorage.getItem('rfo_logged_email');
+            
+            // Para testes iniciais, se não houver e-mail logado, vamos pedir via prompt para testar a restrição
+            if (!loggedEmail) {
+                loggedEmail = prompt("Digite seu e-mail (Gmail) para validar suas permissões no sistema RFO:") || "";
+                localStorage.setItem('rfo_logged_email', loggedEmail.trim().toLowerCase());
+            }
+
+            loggedEmail = loggedEmail.trim().toLowerCase();
+            document.getElementById('userInfoBadgeinnerText') = `Conectado como: ${loggedEmail}`;
+            document.getElementById('userInfoBadge').innerText = `Conta Roblox: ${localStorage.getItem('rfo_roblox_user')} | E-mail: ${loggedEmail}`;
+
+            // Validação estricta dos botões de Admin e Dono pelo e-mail
+            if (loggedEmail === ADMIN_EMAIL || loggedEmail === DONO_EMAIL) {
+                document.getElementById('navAdmin').style.display = 'flex';
+            }
+            if (loggedEmail === DONO_EMAIL) {
+                document.getElementById('navDono').style.display = 'flex';
             }
         });
+
+        function logoutUser() {
+            localStorage.clear();
+            window.location.href = "index.html";
+        }
     </script>
 </body>
 </html>
