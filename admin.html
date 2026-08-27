@@ -75,7 +75,7 @@
         }
 
         textarea {
-            height: 120px;
+            height: 140px;
             font-family: monospace;
             resize: vertical;
         }
@@ -199,7 +199,7 @@
             renderAdminTeams();
         });
 
-        // 1. Lógica Corrigida de Importação de Partidas (Focada nos Times Reais)
+        // 1. Lógica de Importação de Partidas Baseada nas Tags de Emoji do Discord
         function importDiscordMatches() {
             const text = document.getElementById('discordInput').value;
             if (!text.trim()) {
@@ -208,52 +208,60 @@
             }
 
             const lines = text.split('\n');
-            let currentCategory = "Geral";
+            let currentCategory = "RFO Series";
             let importedCount = 0;
 
             for (let line of lines) {
-                // Identifica se a linha é o título da liga/categoria (geralmente entre negrito e sem símbolo de confronto)
-                if (line.includes('**') && !line.includes('⚔️')) {
-                    let cleanCat = line.replace(/\*\*/g, '').trim();
-                    if (cleanCat.length > 0) currentCategory = cleanCat;
+                // Identifica o nome da Liga (ex: **Premier League**, **LA LIGA**, etc.)
+                if (line.includes('**')) {
+                    let catMatch = line.match(/\*\*(.*?)\*\*/);
+                    if (catMatch && catMatch[1].trim().length > 2 && !catMatch[1].includes('RFO GW')) {
+                        currentCategory = catMatch[1].trim();
+                    }
                     continue;
                 }
 
-                // Processa apenas as linhas que possuem o confronto (caracterizadas por ⚔️ ou estrutura de horários)
-                if (line.includes('⚔️') || line.includes('<t:')) {
-                    let parts = line.split('⚔️');
-                    if (parts.length < 2) continue;
+                // Processa a linha de confronto que contenha a espada ⚔️
+                if (line.includes('⚔️')) {
+                    // Extrai a rodada (ex: | R3 |)
+                    let roundMatch = line.match(/\|\s*(R[0-9]+)\s*\|/i);
+                    let round = roundMatch ? roundMatch[1].toUpperCase() : "R3";
 
-                    let leftPart = parts[0];
-                    let rightPart = parts[1];
+                    // Extrai todas as tags de emoji personalizadas do Discord no formato <:NOME:ID>
+                    let emojis = line.match(/<:([a-zA-Z0-9]+):[0-9]+>/g);
+                    
+                    let homeTeam = "MANDANTE";
+                    let awayTeam = "VISITANTE";
 
-                    // Extrai a rodada (ex: | R1 | ou Rodada 1)
-                    let roundMatch = leftPart.match(/\|\s*(.*?)\s*\|/);
-                    let round = roundMatch ? roundMatch[1].trim() : "Rodada";
+                    if (emojis && emojis.length >= 2) {
+                        // O primeiro emoji de time geralmente é o mandante (ignorando o primeiro se for o emoji da liga)
+                        // No seu formato: <:+liga+> | R3 | <:+mandante+> ⚔️ <:+visitante+>
+                        // Vamos filtrar pegando os dois últimos emojis da linha ou os que estão colados ao ⚔️
+                        let partsOfLine = line.split('⚔️');
+                        let leftSideEmojis = partsOfLine[0].match(/<:([a-zA-Z0-9]+):[0-9]+>/g);
+                        let rightSideEmojis = partsOfLine[1].match(/<:([a-zA-Z0-9]+):[0-9]+>/g);
 
-                    // Limpa formatações e emojis para isolar estritamente o nome do time
-                    // Remove tags de emoji customizadas do Discord (<:nome:id>)
-                    let cleanLeft = leftPart.replace(/<:[^>]+>/g, '').replace(/\|/g, '').replace(round, '').trim();
-                    let cleanRight = rightPart.replace(/<:[^>]+>/g, '').replace(/<t:[0-9]+:[A-Za-z]>/g, '').trim();
+                        if (leftSideEmojis && leftSideEmojis.length > 0) {
+                            let matchName = leftSideEmojis[leftSideEmojis.length - 1].match(/<:([a-zA-Z0-9]+):/);
+                            if (matchName) homeTeam = matchName[1].toUpperCase();
+                        }
 
-                    // Pega o primeiro termo limpo ou palavras válidas que sobraram
-                    let homeTeam = cleanLeft.split(' ').filter(w => w.length > 1)[0] || "Mandante";
-                    let awayTeam = cleanRight.split(' ').filter(w => w.length > 1)[0] || "Visitante";
+                        if (rightSideEmojis && rightSideEmojis.length > 0) {
+                            let matchName = rightSideEmojis[0].match(/<:([a-zA-Z0-9]+):/);
+                            if (matchName) awayTeam = matchName[1].toUpperCase();
+                        }
+                    }
 
-                    // Se por acaso pegou o nome da categoria por engano, define um padrão limpo
-                    if (homeTeam.toLowerCase() === currentCategory.toLowerCase()) homeTeam = "Time A";
-                    if (awayTeam.toLowerCase() === currentCategory.toLowerCase()) awayTeam = "Time B";
-
-                    // Extrai o horário em timestamp do Discord (<t:1234567890:f>)
-                    let timeMatch = rightPart.match(/<t:([0-9]+):[A-Za-z]>/);
+                    // Extrai o timestamp do Discord (<t:1787695200:F>)
+                    let timeMatch = line.match(/<t:([0-9]+):[A-Za-z]>/);
                     let timestamp = timeMatch ? parseInt(timeMatch[1]) * 1000 : Date.now() + 3600000;
 
                     matchesList.push({
                         id: Date.now() + Math.random(),
                         category: currentCategory,
                         round: round,
-                        home: homeTeam.toUpperCase(),
-                        away: awayTeam.toUpperCase(),
+                        home: homeTeam,
+                        away: awayTeam,
                         timestamp: timestamp
                     });
                     importedCount++;
@@ -262,7 +270,7 @@
 
             localStorage.setItem('rfo_matches', JSON.stringify(matchesList));
             renderAdminMatches();
-            document.getElementById('matchStatus').innerText = `Sucesso! ${importedCount} partidas importadas corretamente.`;
+            document.getElementById('matchStatus').innerText = `Sucesso! ${importedCount} partidas importadas com os times corretos.`;
             document.getElementById('discordInput').value = "";
         }
 
@@ -324,7 +332,7 @@
             table.innerHTML = "";
 
             if (teamsList.length === 0) {
-                table.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var(--text-muted);">Nenhum time cadastrado ainda.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var0(--text-muted);">Nenhum time cadastrado ainda.</td></tr>`;
                 return;
             }
 
