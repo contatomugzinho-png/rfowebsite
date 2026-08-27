@@ -13,8 +13,6 @@
             --accent-blue: #3b82f6;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --success-green: #10b981;
-            --warning-yellow: #f59e0b;
             --border-color: rgba(0, 85, 255, 0.25);
         }
 
@@ -31,7 +29,10 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            animation: fadeInBody 0.4s ease-in-out;
         }
+
+        @keyframes fadeInBody { from { opacity: 0; } to { opacity: 1; } }
 
         header {
             background: var(--bg-card);
@@ -40,20 +41,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
         }
 
-        .logo {
-            font-size: 1.2rem;
-            font-weight: 900;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
+        .logo { font-size: 1.2rem; font-weight: 900; color: #fff; display: flex; align-items: center; gap: 8px; }
         .logo i { color: var(--primary-blue); }
 
         .menu-btn {
@@ -64,274 +54,85 @@
             padding: 0.5rem 0.8rem;
             border-radius: 8px;
             cursor: pointer;
-            transition: 0.2s;
         }
-
-        .menu-btn:hover { background: rgba(0, 85, 255, 0.1); }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -280px;
-            width: 280px;
-            height: 100%;
-            background: var(--bg-card);
-            border-left: 1px solid var(--border-color);
-            z-index: 1000;
-            transition: right 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem;
-            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
-        }
-
-        .sidebar.active { right: 0; }
-
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 1rem;
-        }
-
-        .close-sidebar {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .sidebar-nav a {
-            color: var(--text-main);
-            text-decoration: none;
-            padding: 0.8rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: 0.2s;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .sidebar-nav a:hover {
-            background: rgba(0, 85, 255, 0.15);
-            color: var(--accent-blue);
-            border-color: var(--border-color);
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(3px);
-            z-index: 900;
-            display: none;
-        }
-
-        .overlay.active { display: block; }
 
         main {
             flex: 1;
             padding: 2rem 1.5rem;
-            max-width: 900px;
+            max-width: 800px;
             margin: 0 auto;
             width: 100%;
         }
 
-        h1 {
-            font-size: 1.8rem;
-            font-weight: 900;
-            margin-bottom: 0.3rem;
-            color: #ffffff;
-        }
+        h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 0.5rem; color: #fff; }
+        p { color: var(--text-muted); margin-bottom: 2rem; }
 
-        .section-desc {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .card {
+        .match-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 1.5rem;
-            box-shadow: 0 0 30px rgba(0, 85, 255, 0.1);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0, 85, 255, 0.08);
+            transition: transform 0.2s ease;
         }
 
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-        }
+        .match-card:hover { transform: translateY(-2px); }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th, td {
-            padding: 14px;
-            font-size: 0.85rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        th {
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-            background: rgba(0, 85, 255, 0.05);
-        }
-
-        td { color: var(--text-main); }
-
-        .badge-round {
-            background: rgba(59, 130, 246, 0.15);
-            color: var(--accent-blue);
-            padding: 0.2rem 0.5rem;
-            border-radius: 6px;
-            font-weight: 700;
-            font-size: 0.7rem;
-            display: inline-block;
-            margin-top: 4px;
-        }
-
-        .status-badge {
-            padding: 0.3rem 0.7rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            display: inline-block;
-        }
-        .status-upcoming { background: rgba(59, 130, 246, 0.15); color: var(--accent-blue); }
-        .status-live { background: rgba(16, 185, 129, 0.15); color: var(--success-green); animation: pulse 1.5s infinite; }
-        .status-finished { background: rgba(245, 158, 11, 0.15); color: var(--warning-yellow); }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
+        .teams { font-weight: 700; font-size: 1.1rem; color: #fff; }
+        .category { font-size: 0.8rem; color: var(--accent-blue); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo"><i class="fa-solid fa-shield-halayed"></i> RFO Partidas</div>
-        <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
+        <div class="logo"><i class="fa-solid fa-futbol"></i> RFO Partidas</div>
+        <a href="home.html" class="menu-btn"><i class="fa-solid fa-arrow-left"></i> Voltar</a>
     </header>
 
-    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h3>Menu RFO</h3>
-            <button class="close-sidebar" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="sidebar-nav">
-            <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="matches.html"><i class="fa-solid fa-futbol"></i> Partidas</a>
-            <a href="transmissoes.html"><i class="fa-solid fa-video"></i> Transmissões</a>
-            <a href="admin.html"><i class="fa-solid fa-lock"></i> Painel Admin</a>
-            <a href="dono.html"><i class="fa-solid fa-crown"></i> Painel de Dono</a>
-        </div>
-    </div>
-
     <main>
-        <h1>Partidas Agendadas</h1>
-        <p class="section-desc">Acompanhe todos os confrontos, horários e status automáticos dos jogos da RFO.</p>
+        <h1>Partidas da Liga</h1>
+        <p>Confira os confrontos agendados e em andamento.</p>
 
-        <div class="card">
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Competição / Rodada</th>
-                            <th>Confronto</th>
-                            <th>Horário</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="publicMatchesTable">
-                        <tr>
-                            <td colspan="4" style="text-align:center; color: var(--text-muted);">Carregando partidas...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div id="matchesContainer">
+            <!-- As partidas serão carregadas dinamicamente aqui -->
         </div>
     </main>
 
     <script>
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
-        }
-
         window.addEventListener('DOMContentLoaded', () => {
-            loadPublicMatches();
-        });
-
-        function loadPublicMatches() {
-            const table = document.getElementById('publicMatchesTable');
-            let matchesList = JSON.parse(localStorage.getItem('rfo_matches')) || [];
-
-            table.innerHTML = "";
-
-            if (matchesList.length === 0) {
-                table.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Nenhuma partida cadastrada no momento.</td></tr>`;
+            if (localStorage.getItem('rfo_roblox_verified') !== 'true') {
+                window.location.href = "index.html";
                 return;
             }
 
-            const now = new Date().getTime();
+            loadMatches();
+        });
 
-            matchesList.forEach(match => {
-                let matchTime = match.timestamp;
-                let matchDateObj = new Date(matchTime);
-                let timeFormatted = matchDateObj.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'}) + ' - ' + matchDateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+        function loadMatches() {
+            const container = document.getElementById('matchesContainer');
+            let matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
 
-                let statusText = match.status;
-                let diffMinutes = (now - matchTime) / (1000 * 60);
+            if (matches.length === 0) {
+                container.innerHTML = `<p style="text-align:center; color:var(--text-muted);">Nenhuma partida cadastrada no momento.</p>`;
+                return;
+            }
 
-                if (!statusText || statusText === "Agendada") {
-                    if (diffMinutes >= 0 && diffMinutes <= 110) {
-                        statusText = "Ao Vivo";
-                    } else if (diffMinutes > 110) {
-                        statusText = "Encerrada";
-                    } else {
-                        statusText = "Agendada";
-                    }
-                }
-
-                let statusClass = "status-upcoming";
-                if (statusText === "Ao Vivo") statusClass = "status-live";
-                if (statusText === "Encerrada") statusClass = "status-finished";
-
-                table.innerHTML += `
-                    <tr>
-                        <td>
-                            <b>${match.category}</b><br>
-                            <span class="badge-round">${match.round}</span>
-                        </td>
-                        <td><b>${match.home}</b> vs <b>${match.away}</b></td>
-                        <td>${timeFormatted}</td>
-                        <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                    </tr>
+            container.innerHTML = "";
+            matches.forEach(m => {
+                container.innerHTML += `
+                    <div class="match-card">
+                        <div>
+                            <div class="category">${m.category}</div>
+                            <div class="teams">${m.home} vs ${m.away}</div>
+                        </div>
+                        <div style="font-size: 0.85rem; padding: 0.4rem 0.8rem; background: rgba(0,85,255,0.1); border-radius: 8px; color: var(--accent-blue);">
+                            ${m.status || 'Agendado'}
+                        </div>
+                    </div>
                 `;
             });
         }
