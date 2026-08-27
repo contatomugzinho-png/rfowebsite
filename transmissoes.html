@@ -179,9 +179,27 @@
             font-weight: 700;
             cursor: pointer;
             transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn:hover { background: var(--accent-blue); }
+
+        .btn-stop {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger-red);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+        }
+        .btn-stop:hover { background: var(--danger-red); color: #fff; }
+
+        .btn-download {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success-green);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            text-decoration: none;
+        }
+        .btn-download:hover { background: var(--success-green); color: #fff; }
 
         .form-group {
             margin-bottom: 1rem;
@@ -205,6 +223,36 @@
             border-radius: 8px;
             color: #fff;
             font-size: 0.9rem;
+        }
+
+        .video-preview-container {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-top: 1rem;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .video-placeholder {
+            position: absolute;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
         }
 
         .stream-box {
@@ -240,42 +288,42 @@
 
     <main>
         <h1>Transmissões ao Vivo</h1>
-        <p class="section-desc">Acompanhe as transmissões oficiais das partidas da RFO.</p>
+        <p class="section-desc">Acompanhe as transmissões oficiais das partidas da RFO e transmita direto da sua tela.</p>
 
-        <!-- Botão e Painel de Iniciar Transmissão (Visível apenas para Admin / Media Team / Dono) -->
+        <!-- Painel de Transmissão / Gravação (Visível para Staff/Admin/Dono) -->
         <div id="creatorSection" class="card" style="display: none;">
-            <h3 style="margin-bottom: 1rem;">Iniciar Transmissão</h3>
-            <button class="btn" id="startStreamBtn" onclick="openStreamWizard()">Iniciar Transmissão</button>
-
-            <!-- Wizard de Transmissão -->
-            <div id="streamWizard" style="display: none; margin-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 1.5rem;">
+            <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-tower-broadcast"></i> Central de Transmissão (Tela / Jogo)</h3>
+            
+            <div id="wizardSetup">
                 <div class="form-group">
-                    <label>Selecione uma Partida</label>
+                    <label>Selecione a Partida</label>
                     <select id="matchSelect">
                         <!-- Preenchido via JS -->
                     </select>
                 </div>
+                <button class="btn" onclick="startScreenCaptureStream()"><i class="fa-solid fa-play"></i> Compartilhar Tela e Iniciar Transmissão</button>
+            </div>
 
-                <div class="form-group">
-                    <label>Agendar Transmissão</label>
-                    <select id="scheduleToggle" onchange="toggleScheduleTime()">
-                        <option value="desativado">Desativado</option>
-                        <option value="ativado">Ativado</option>
-                    </select>
+            <!-- Preview do Vídeo Capturado -->
+            <div id="activeStreamControls" style="display: none; margin-top: 1rem;">
+                <p style="color: var(--success-green); font-weight: 700; margin-bottom: 0.5rem;">🔴 Transmitindo/Gravando tela ao vivo</p>
+                <div class="video-preview-container">
+                    <div id="videoPlaceholder" class="video-placeholder">
+                        <i class="fa-solid fa-desktop" style="font-size: 2rem;"></i>
+                        Aguardando captura...
+                    </div>
+                    <video id="livePreviewVideo" autoplay muted playsinline></video>
                 </div>
-
-                <div class="form-group" id="timeInputGroup" style="display: none;">
-                    <label>Horário da Transmissão</label>
-                    <input type="datetime-local" id="streamTimeInput">
+                <div style="display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;">
+                    <button class="btn btn-stop" onclick="stopScreenCaptureStream()"><i class="fa-solid fa-stop"></i> Parar Transmissão</button>
+                    <a id="downloadRecordBtn" class="btn btn-download" style="display: none;" download="partida-rfo.webm"><i class="fa-solid fa-download"></i> Baixar Gravação (.webm)</a>
                 </div>
-
-                <button class="btn" onclick="publishStream()">Confirmar e Publicar Transmissão</button>
             </div>
         </div>
 
         <!-- Lista de Transmissões Ativas -->
         <div class="card">
-            <h3 style="margin-bottom: 1rem;">Transmissões em Andamento / Agendadas</h3>
+            <h3 style="margin-bottom: 1rem;">Transmissões em Andamento</h3>
             <div id="streamsList">
                 <p style="color: var(--text-muted); text-align: center;">Nenhuma transmissão ativa no momento.</p>
             </div>
@@ -283,6 +331,10 @@
     </main>
 
     <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+        let activeStream = null;
+
         function toggleMenu() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('overlay').classList.toggle('active');
@@ -294,29 +346,15 @@
         });
 
         function checkStreamPermission() {
-            const loggedEmail = promptForEmailCheck(); // Simulação de verificação de permissão armazenada
-            // Vamos verificar se o e-mail está na lista de staff com permissão de Administrador ou Media Team
-            const staffList = JSON.parse(localStorage.getItem('rfo_staff')) || [
-                { email: "contatomugzinho@gmail.com", role: "Dono" }
-            ];
-
-            // Para facilitar o teste, se o usuário logou no Admin ou Dono anteriormente, liberamos:
             const isAdminOrMedia = localStorage.getItem('rfo_admin_logged') === 'true' || localStorage.getItem('rfo_owner_logged') === 'true';
 
             if (isAdminOrMedia) {
                 document.getElementById('creatorSection').style.display = 'block';
+                loadMatchesSelect();
             }
         }
 
-        function promptForEmailCheck() {
-            return true;
-        }
-
-        function openStreamWizard() {
-            const wizard = document.getElementById('streamWizard');
-            wizard.style.display = 'block';
-
-            // Carregar partidas disponíveis
+        function loadMatchesSelect() {
             const matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
             const select = document.getElementById('matchSelect');
             select.innerHTML = "";
@@ -327,53 +365,112 @@
             }
 
             matches.forEach((m, index) => {
-                select.innerHTML += `<option value="${index}">${m.category} - ${m.home} vs ${m.away}</option>`;
+                select.innerHTML += `<option value="${index}">[${m.league || m.category}] ${m.home} vs ${m.away}</option>`;
             });
         }
 
-        function toggleScheduleTime() {
-            const val = document.getElementById('scheduleToggle').value;
-            const timeGroup = document.getElementById('timeInputGroup');
-            timeGroup.style.display = val === 'ativado' ? 'block' : 'none';
-        }
-
-        function publishStream() {
+        async function startScreenCaptureStream() {
             const matchIndex = document.getElementById('matchSelect').value;
-            const scheduleState = document.getElementById('scheduleToggle').value;
-            const streamTime = document.getElementById('streamTimeInput').value;
-
             let matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
-            let streams = JSON.parse(localStorage.getItem('rfo_streams')) || [];
 
             if (!matches[matchIndex]) {
                 alert("Selecione uma partida válida!");
                 return;
             }
 
-            streams.push({
-                match: matches[matchIndex],
-                scheduled: scheduleState === 'ativado',
-                time: streamTime || "Ao vivo agora"
-            });
+            try {
+                // Abre a caixa de diálogo do navegador para escolher a tela, janela ou aba do jogo
+                activeStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { mediaSource: "screen", frameRate: 60 },
+                    audio: true
+                });
 
-            localStorage.setItem('rfo_streams', JSON.stringify(streams));
-            alert("Transmissão iniciada com sucesso!");
-            location.reload();
+                const previewVideo = document.getElementById('livePreviewVideo');
+                const placeholder = document.getElementById('videoPlaceholder');
+                
+                previewVideo.srcObject = activeStream;
+                placeholder.style.display = 'none';
+
+                // Configura o gravador de mídia
+                recordedChunks = [];
+                mediaRecorder = new MediaRecorder(activeStream, { mimeType: 'video/webm; codecs=vp9' });
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const downloadBtn = document.getElementById('downloadRecordBtn');
+                    downloadBtn.href = url;
+                    downloadBtn.style.display = 'inline-flex';
+                };
+
+                // Se o usuário fechar o compartilhamento pelo botão nativo do navegador
+                activeStream.getVideoTracks()[0].onended = () => {
+                    stopScreenCaptureStream();
+                };
+
+                mediaRecorder.start();
+
+                // Salva a transmissão no LocalStorage para exibir na lista pública
+                let streams = JSON.parse(localStorage.getItem('rfo_streams')) || [];
+                streams.push({
+                    match: matches[matchIndex],
+                    status: "Transmitindo ao vivo"
+                });
+                localStorage.setItem('rfo_streams', JSON.stringify(streams));
+
+                // Alterna visualização dos painéis
+                document.getElementById('wizardSetup').style.display = 'none';
+                document.getElementById('activeStreamControls').style.display = 'block';
+                loadStreams();
+
+            } catch (error) {
+                console.error("Erro ao iniciar captura de tela:", error);
+                alert("Compartilhamento de tela cancelado ou bloqueado pelo navegador.");
+            }
+        }
+
+        function stopScreenCaptureStream() {
+            if (mediaRecorder && mediaRecorder.state !== "inactive") {
+                mediaRecorder.stop();
+            }
+
+            if (activeStream) {
+                activeStream.getTracks().forEach(track => track.stop());
+            }
+
+            // Remove da lista de ativas no storage
+            localStorage.removeItem('rfo_streams');
+
+            document.getElementById('wizardSetup').style.display = 'block';
+            document.getElementById('activeStreamControls').style.display = 'none';
+            document.getElementById('livePreviewVideo').srcObject = null;
+            document.getElementById('videoPlaceholder').style.display = 'flex';
+
+            loadStreams();
         }
 
         function loadStreams() {
             const container = document.getElementById('streamsList');
             let streams = JSON.parse(localStorage.getItem('rfo_streams')) || [];
 
-            if (streams.length === 0) return;
+            if (streams.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-muted); text-align: center;">Nenhuma transmissão ativa no momento.</p>`;
+                return;
+            }
 
             container.innerHTML = "";
             streams.forEach(s => {
                 container.innerHTML += `
                     <div class="stream-box">
                         <h4>🔴 ${s.match.home} vs ${s.match.away}</h4>
-                        <p style="color:var(--text-muted); font-size:0.85rem; margin-top:4px;">Competição: ${s.match.category}</p>
-                        <p style="color:var(--accent-blue); font-size:0.8rem; margin-top:4px;">Status: ${s.scheduled ? 'Agendado para: ' + s.time : 'Transmitindo ao vivo'}</p>
+                        <p style="color:var(--text-muted); font-size:0.85rem; margin-top:4px;">Competição: ${s.match.league || s.match.category}</p>
+                        <p style="color:var(--success-green); font-size:0.8rem; margin-top:4px; font-weight:700;">Status: Ao vivo</p>
                     </div>
                 `;
             });
