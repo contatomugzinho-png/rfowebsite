@@ -88,14 +88,7 @@
         h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: #fff; display: flex; align-items: center; gap: 8px; }
         p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
 
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
         .form-group { margin-bottom: 1.2rem; }
-        .form-group.full { grid-column: span 2; }
 
         label {
             display: block;
@@ -107,18 +100,21 @@
             font-weight: 700;
         }
 
-        input, select {
+        textarea {
             width: 100%;
-            padding: 0.9rem;
+            height: 180px;
+            padding: 1rem;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
             border-radius: 10px;
             color: #fff;
-            font-size: 0.95rem;
+            font-size: 0.85rem;
+            font-family: monospace;
+            resize: vertical;
             transition: 0.2s;
         }
 
-        input:focus, select:focus {
+        textarea:focus {
             outline: none;
             border-color: var(--accent-blue);
             box-shadow: 0 0 10px rgba(0, 85, 255, 0.3);
@@ -188,49 +184,23 @@
     </header>
 
     <main>
+        <!-- Card de Importação por Modelo -->
         <div class="card">
-            <h1>Cadastrar Partida</h1>
-            <p>Adicione os confrontos detalhados por liga, rodada, emojis do Discord e horário.</p>
+            <h1>Importar Modelo do Discord</h1>
+            <p>Cole o modelo completo com os títulos das ligas, rodadas, emojis e timestamps abaixo. O sistema vai extrair tudo sozinho.</p>
 
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Liga / Competição</label>
-                    <select id="matchLeague">
-                        <option value="Premier League">Premier League</option>
-                        <option value="LA LIGA">LA LIGA</option>
-                        <option value="SERIE A">SERIE A</option>
-                        <option value="BUNDESLIGA">BUNDESLIGA</option>
-                        <option value="LIGUE ONE">LIGUE ONE</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Rodada</label>
-                    <input type="text" id="matchRound" placeholder="Ex: R3">
-                </div>
-
-                <div class="form-group">
-                    <label>Mandante (Emoji Discord / Nome)</label>
-                    <input type="text" id="matchHome" placeholder="Ex: <:CHE:1526260471903289527> Chelsea">
-                </div>
-
-                <div class="form-group">
-                    <label>Visitante (Emoji Discord / Nome)</label>
-                    <input type="text" id="matchAway" placeholder="Ex: <:LIV:1526260240042033154> Liverpool">
-                </div>
-
-                <div class="form-group full">
-                    <label>Data e Horário do Jogo</label>
-                    <input type="datetime-local" id="matchDateTime">
-                </div>
+            <div class="form-group">
+                <label>Modelo Bruto (Texto do Discord)</label>
+                <textarea id="discordModelInput" placeholder="-# ||@everyone||&#10;> # <:RFO:...> **RFO GW3**&#10;<:PL2:...> **Premier League**&#10;<:PL2:...> | R3 | <:CHE:...> ⚔️ <:LIV:...> <t:1787695200:F>"></textarea>
             </div>
 
-            <button class="btn-submit" onclick="registerMatch()">Salvar Partida</button>
+            <button class="btn-submit" onclick="importDiscordModel()">Processar e Importar Partidas</button>
         </div>
 
+        <!-- Card de Gerenciamento -->
         <div class="card">
-            <h2><i class="fa-solid fa-pen-to-square"></i> Gerenciar Partidas</h2>
-            <p>Remova partidas cadastradas incorretamente.</p>
+            <h2><i class="fa-solid fa-pen-to-square"></i> Partidas Cadastradas</h2>
+            <p>Visualize ou remova partidas já importadas.</p>
             <div class="manage-list" id="manageMatchesList"></div>
         </div>
     </main>
@@ -244,42 +214,76 @@
             renderManageList();
         });
 
-        function registerMatch() {
-            const league = document.getElementById('matchLeague').value;
-            const round = document.getElementById('matchRound').value.trim();
-            const home = document.getElementById('matchHome').value.trim();
-            const away = document.getElementById('matchAway').value.trim();
-            const dateTimeVal = document.getElementById('matchDateTime').value;
-
-            if (!round || !home || !away || !dateTimeVal) {
-                alert("Por favor, preencha todos os campos!");
+        function importDiscordModel() {
+            const rawText = document.getElementById('discordModelInput').value;
+            if (!rawText.trim()) {
+                alert("Cole o modelo do Discord na caixa de texto!");
                 return;
             }
 
-            // Converte a data selecionada para timestamp Unix do Discord (<t:TIMESTAMP:F>)
-            const dateObj = new Date(dateTimeVal);
-            const unixTimestamp = Math.floor(dateObj.getTime() / 1000);
+            const lines = rawText.split('\n');
+            let currentLeague = "Outros";
+            let importedCount = 0;
 
             let matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
 
-            matches.push({
-                league: league,
-                round: round,
-                home: home,
-                away: away,
-                timestamp: unixTimestamp,
-                dateTimeFormatted: dateObj.toLocaleString('pt-BR')
-            });
+            for (let line of lines) {
+                line = line.trim();
+                if (!line) continue;
 
-            localStorage.setItem('rfo_matches', JSON.stringify(matches));
-            alert("Partida cadastrada com sucesso!");
+                // Identifica se a linha é o título da liga (Ex: <:PL2:1526259241072201990> **Premier League**)
+                if (line.includes('**') && !line.includes('⚔️')) {
+                    const matchLeagueName = line.match(/\*\*(.*?)\*\*/);
+                    if (matchLeagueName && matchLeagueName[1]) {
+                        currentLeague = matchLeagueName[1].trim();
+                    }
+                    continue;
+                }
 
-            document.getElementById('matchRound').value = "";
-            document.getElementById('matchHome').value = "";
-            document.getElementById('matchAway').value = "";
-            document.getElementById('matchDateTime').value = "";
+                // Identifica se a linha é uma partida (Ex: <:PL2:...> | R3 | <:CHE:...> ⚔️ <:LIV:...> <t:1787695200:F>)
+                if (line.includes('⚔️') && line.includes('<t:')) {
+                    // Extrai a rodada (ex: R3)
+                    const roundMatch = line.match(/\|\s*([A-Za-z0-9]+)\s*\|/);
+                    const round = roundMatch ? roundMatch[1] : "R1";
 
-            renderManageList();
+                    // Extrai o timestamp do Discord (<t:NUMEROS:F>)
+                    const timeMatch = line.match(/<t:(\d+):F>/);
+                    const timestamp = timeMatch ? timeMatch[1] : "0";
+
+                    // Pega o trecho entre a rodada e o timestamp para extrair os times/emojis
+                    // Remove o bloco da rodada e do horário para isolar os times
+                    let teamsPart = line.replace(/<t:\d+:F>/g, '').trim();
+                    if (roundMatch) {
+                        teamsPart = teamsPart.replace(roundMatch[0], '').trim();
+                    }
+                    // Remove o prefixo da linha se houver (ex: <:PL2:...> |)
+                    teamsPart = teamsPart.replace(/^<:[a-zA-Z0-9_]+:\d+>\s*\|?/g, '').trim();
+
+                    const parts = teamsPart.split('⚔️');
+                    if (parts.length === 2) {
+                        const home = parts[0].trim();
+                        const away = parts[1].trim();
+
+                        matches.push({
+                            league: currentLeague,
+                            round: round,
+                            home: home,
+                            away: away,
+                            timestamp: timestamp
+                        });
+                        importedCount++;
+                    }
+                }
+            }
+
+            if (importedCount > 0) {
+                localStorage.setItem('rfo_matches', JSON.stringify(matches));
+                alert(`${importedCount} partidas importadas com sucesso!`);
+                document.getElementById('discordModelInput').value = "";
+                renderManageList();
+            } else {
+                alert("Nenhuma partida foi encontrada no texto. Verifique se o formato do modelo está correto.");
+            }
         }
 
         function renderManageList() {
@@ -298,7 +302,7 @@
                 item.innerHTML = `
                     <div class="match-info">
                         <b>[${match.league}] ${match.round} - ${match.home} x ${match.away}</b>
-                        <span>Horário: ${match.dateTimeFormatted}</span>
+                        <span>Timestamp: &lt;t:${match.timestamp}:F&gt;</span>
                     </div>
                     <button class="btn-delete" onclick="deleteMatch(${index})"><i class="fa-solid fa-trash"></i> Excluir</button>
                 `;
