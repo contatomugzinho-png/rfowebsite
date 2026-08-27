@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Início - RFO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #030712;
+            --bg-card: #0b1120;
+            --primary-blue: #0055ff;
+            --accent-blue: #3b82f6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(0, 85, 255, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i { color: var(--primary-blue); }
+
+        .menu-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 1.2rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .menu-btn:hover { background: rgba(0, 85, 255, 0.1); }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100%;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .sidebar.active { right: 0; }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1rem;
+        }
+
+        .close-sidebar {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .sidebar-nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            transition: 0.2s;
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(0, 85, 255, 0.15);
+            color: var(--accent-blue);
+            border-color: var(--border-color);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            z-index: 900;
+            display: none;
+        }
+
+        .overlay.active { display: block; }
+
+        main {
+            flex: 1;
+            padding: 2rem 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            text-align: center;
+        }
+
+        .hero {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3rem 1.5rem;
+            box-shadow: 0 0 40px rgba(0, 85, 255, 0.15);
+            margin-top: 2rem;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: var(--primary-blue);
+            color: #fff;
+            padding: 0.8rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: 0.2s;
+            box-shadow: 0 4px 20px rgba(0, 85, 255, 0.4);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><i class="fa-solid fa-shield-halayed"></i> RFO Hub</div>
+        <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
+    </header>
+
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu RFO</h3>
+            <button class="close-sidebar" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sidebar-nav">
+            <a href="home.html"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="matches.html"><i class="fa-solid fa-futbol"></i> Partidas</a>
+            <a href="transmissoes.html"><i class="fa-solid fa-video"></i> Transmissões</a>
+            <a href="admin.html"><i class="fa-solid fa-lock"></i> Painel Admin</a>
+            <a href="dono.html"><i class="fa-solid fa-crown"></i> Painel de Dono</a>
+        </div>
+    </div>
+
+    <main>
+        <div class="hero">
+            <h1>Painel Principal RFO</h1>
+            <p>Conta verificada com sucesso! Navegue pelas opções do menu lateral para acompanhar partidas, transmissões e gerenciar a organização.</p>
+            <a href="matches.html" class="btn-primary">Ver Partidas da Rodada</a>
+        </div>
+    </main>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        // Segurança simples: se não estiver verificado, chuta de volta para o index
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('rfo_roblox_verified') !== 'true') {
+                window.location.href = "index.html";
+            }
+        });
+    </script>
+</body>
+</html>
