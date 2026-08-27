@@ -184,10 +184,9 @@
     </header>
 
     <main>
-        <!-- Card de Importação por Modelo -->
         <div class="card">
             <h1>Importar Modelo do Discord</h1>
-            <p>Cole o modelo completo com os títulos das ligas, rodadas, emojis e timestamps abaixo. O sistema vai extrair tudo sozinho.</p>
+            <p>Cole o modelo completo. O sistema vai ignorar os emojis do Discord e extrair de forma limpa as iniciais dos times (3 letras).</p>
 
             <div class="form-group">
                 <label>Modelo Bruto (Texto do Discord)</label>
@@ -197,7 +196,6 @@
             <button class="btn-submit" onclick="importDiscordModel()">Processar e Importar Partidas</button>
         </div>
 
-        <!-- Card de Gerenciamento -->
         <div class="card">
             <h2><i class="fa-solid fa-pen-to-square"></i> Partidas Cadastradas</h2>
             <p>Visualize ou remova partidas já importadas.</p>
@@ -213,6 +211,18 @@
             }
             renderManageList();
         });
+
+        function cleanTeamName(rawPart) {
+            // Remove o emoji do Discord no formato <:NOME:ID>
+            let cleaned = rawPart.replace(/<:[a-zA-Z0-9_]+:\d+>/g, '').trim();
+            // Se sobrou alguma coisa, pega as 3 primeiras letras em maiúsculo (ou o que tiver)
+            cleaned = cleaned.replace(/[^a-zA-Z]/g, '').toUpperCase();
+            if (cleaned.length >= 3) {
+                return cleaned.substring(0, 3);
+            }
+            // Fallback caso venha vazio
+            return "TIM";
+        }
 
         function importDiscordModel() {
             const rawText = document.getElementById('discordModelInput').value;
@@ -231,7 +241,7 @@
                 line = line.trim();
                 if (!line) continue;
 
-                // Identifica se a linha é o título da liga (Ex: <:PL2:1526259241072201990> **Premier League**)
+                // Identifica a liga
                 if (line.includes('**') && !line.includes('⚔️')) {
                     const matchLeagueName = line.match(/\*\*(.*?)\*\*/);
                     if (matchLeagueName && matchLeagueName[1]) {
@@ -240,29 +250,26 @@
                     continue;
                 }
 
-                // Identifica se a linha é uma partida (Ex: <:PL2:...> | R3 | <:CHE:...> ⚔️ <:LIV:...> <t:1787695200:F>)
+                // Identifica a linha de partida com ⚔️
                 if (line.includes('⚔️') && line.includes('<t:')) {
-                    // Extrai a rodada (ex: R3)
                     const roundMatch = line.match(/\|\s*([A-Za-z0-9]+)\s*\|/);
                     const round = roundMatch ? roundMatch[1] : "R1";
 
-                    // Extrai o timestamp do Discord (<t:NUMEROS:F>)
                     const timeMatch = line.match(/<t:(\d+):F>/);
                     const timestamp = timeMatch ? timeMatch[1] : "0";
 
-                    // Pega o trecho entre a rodada e o timestamp para extrair os times/emojis
-                    // Remove o bloco da rodada e do horário para isolar os times
+                    // Isola o trecho dos times divididos por ⚔️
                     let teamsPart = line.replace(/<t:\d+:F>/g, '').trim();
                     if (roundMatch) {
                         teamsPart = teamsPart.replace(roundMatch[0], '').trim();
                     }
-                    // Remove o prefixo da linha se houver (ex: <:PL2:...> |)
+                    // Remove o emoji inicial da linha (ex: <:PL2:...> |)
                     teamsPart = teamsPart.replace(/^<:[a-zA-Z0-9_]+:\d+>\s*\|?/g, '').trim();
 
                     const parts = teamsPart.split('⚔️');
                     if (parts.length === 2) {
-                        const home = parts[0].trim();
-                        const away = parts[1].trim();
+                        const home = cleanTeamName(parts[0]);
+                        const away = cleanTeamName(parts[1]);
 
                         matches.push({
                             league: currentLeague,
@@ -278,7 +285,7 @@
 
             if (importedCount > 0) {
                 localStorage.setItem('rfo_matches', JSON.stringify(matches));
-                alert(`${importedCount} partidas importadas com sucesso!`);
+                alert(`${importedCount} partidas importadas com sucesso com as iniciais limpas!`);
                 document.getElementById('discordModelInput').value = "";
                 renderManageList();
             } else {
