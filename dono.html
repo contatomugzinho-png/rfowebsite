@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Dono - RFO</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #030712;
+            --bg-card: #0b1120;
+            --primary-blue: #0055ff;
+            --accent-blue: #3b82f6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger-red: #ef4444;
+            --success-green: #10b981;
+            --border-color: rgba(0, 85, 255, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i { color: #f59e0b; }
+
+        .menu-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 1.2rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100%;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .sidebar.active { right: 0; }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1rem;
+        }
+
+        .close-sidebar {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .sidebar-nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(0, 85, 255, 0.15);
+            color: var(--accent-blue);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            z-index: 900;
+            display: none;
+        }
+
+        .overlay.active { display: block; }
+
+        main {
+            flex: 1;
+            padding: 2rem 1.5rem;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            margin-bottom: 0.3rem;
+            color: #fff;
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 30px rgba(0, 85, 255, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+        }
+
+        .btn {
+            background: var(--primary-blue);
+            color: #fff;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+        }
+
+        .btn:hover { background: var(--accent-blue); }
+
+        .btn-danger {
+            background: var(--danger-red);
+        }
+        .btn-danger:hover { opacity: 0.8; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 12px;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            text-align: left;
+        }
+
+        th {
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+        }
+
+        .auth-container {
+            max-width: 400px;
+            margin: 4rem auto;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo"><i class="fa-solid fa-crown"></i> Painel de Dono</div>
+        <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
+    </header>
+
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu RFO</h3>
+            <button class="close-sidebar" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sidebar-nav">
+            <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="matches.html"><i class="fa-solid fa-futbol"></i> Partidas</a>
+            <a href="transmissoes.html"><i class="fa-solid fa-video"></i> Transmissões</a>
+            <a href="admin.html"><i class="fa-solid fa-lock"></i> Painel Admin</a>
+            <a href="dono.html"><i class="fa-solid fa-crown"></i> Painel de Dono</a>
+        </div>
+    </div>
+
+    <main id="mainContent">
+        <!-- Tela de Login do Dono -->
+        <div id="loginScreen" class="auth-container card">
+            <h2>Acesso Restrito ao Dono</h2>
+            <p style="margin: 1rem 0;">Digite o e-mail master do proprietário para gerenciar permissões.</p>
+            <div class="form-group">
+                <input type="email" id="ownerEmailInput" placeholder="ex: contatomugzinho@gmail.com">
+            </div>
+            <button class="btn" onclick="loginOwner()">Entrar no Painel</button>
+        </div>
+
+        <!-- Painel de Gerenciamento (Oculto até autenticar) -->
+        <div id="dashboardScreen" style="display: none;">
+            <h1>Gerenciamento de Equipe</h1>
+            <p class="section-desc">Adicione e remova permissões de acesso por e-mail para Administradores, Moderadores, Juízes e Media Team.</p>
+
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">Adicionar Nova Permissão</h3>
+                <div class="form-group">
+                    <label>E-mail do Usuário</label>
+                    <input type="email" id="newUserEmail" placeholder="usuario@email.com">
+                </div>
+                <div class="form-group">
+                    <label>Cargo / Permissão</label>
+                    <select id="newUserRole">
+                        <option value="Administrador">Administrador</option>
+                        <option value="Media Team">Media Team</option>
+                        <option value="Juiz">Juiz</option>
+                    </select>
+                </div>
+                <button class="btn" onclick="addStaff()">Conceder Acesso</button>
+            </div>
+
+            <div class="card">
+                <h3 style="margin-bottom: 1rem;">Membros Autorizados</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>E-mail</th>
+                            <th>Cargo</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="staffTableBody">
+                        <!-- Preenchido via JS -->
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn btn-danger" onclick="logoutOwner()" style="margin-top: 1rem;">Sair do Painel de Dono</button>
+        </div>
+    </main>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
+        const MASTER_EMAIL = "contatomugzinho@gmail.com";
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem('rfo_owner_logged') === 'true') {
+                showDashboard();
+            }
+        });
+
+        function loginOwner() {
+            const email = document.getElementById('ownerEmailInput').value.trim().toLowerCase();
+            if (email === MASTER_EMAIL) {
+                localStorage.setItem('rfo_owner_logged', 'true');
+                showDashboard();
+            } else {
+                alert("Acesso negado! Este e-mail não possui privilégios de Dono.");
+            }
+        }
+
+        function logoutOwner() {
+            localStorage.removeItem('rfo_owner_logged');
+            document.getElementById('dashboardScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'block';
+        }
+
+        function showDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').style.display = 'block';
+            loadStaffList();
+        }
+
+        function getStaffList() {
+            return JSON.parse(localStorage.getItem('rfo_staff')) || [
+                { email: MASTER_EMAIL, role: "Dono" }
+            ];
+        }
+
+        function loadStaffList() {
+            const tbody = document.getElementById('staffTableBody');
+            const staff = getStaffList();
+            tbody.innerHTML = "";
+
+            staff.forEach((member, index) => {
+                let deleteBtn = member.email === MASTER_EMAIL ? 
+                    `<span style="color:var(--text-muted); font-size:0.75rem;">Imune</span>` : 
+                    `<button class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.75rem; width: auto;" onclick="removeStaff(${index})">Remover</button>`;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td><b>${member.email}</b></td>
+                        <td><span style="color:var(--accent-blue); font-weight:700;">${member.role}</span></td>
+                        <td>${deleteBtn}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function addStaff() {
+            const email = document.getElementById('newUserEmail').value.trim().toLowerCase();
+            const role = document.getElementById('newUserRole').value;
+
+            if (!email) {
+                alert("Digite um e-mail válido!");
+                return;
+            }
+
+            let staff = getStaffList();
+            if (staff.some(s => s.email === email)) {
+                alert("Este e-mail já está cadastrado!");
+                return;
+            }
+
+            staff.push({ email, role });
+            localStorage.setItem('rfo_staff', JSON.stringify(staff));
+            document.getElementById('newUserEmail').value = "";
+            loadStaffList();
+            alert("Acesso concedido com sucesso!");
+        }
+
+        function removeStaff(index) {
+            let staff = getStaffList();
+            staff.splice(index, 1);
+            localStorage.setItem('rfo_staff', JSON.stringify(staff));
+            loadStaffList();
+        }
+    </script>
+</body>
+</html>
