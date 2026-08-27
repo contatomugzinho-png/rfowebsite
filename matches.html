@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +28,129 @@
         body {
             background-color: var(--bg-deep);
             color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 900;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo i { color: var(--primary-blue); }
+
+        .menu-btn {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            font-size: 1.2rem;
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .menu-btn:hover { background: rgba(0, 85, 255, 0.1); }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -280px;
+            width: 280px;
+            height: 100%;
+            background: var(--bg-card);
+            border-left: 1px solid var(--border-color);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            display: flex;
+            flex-direction: column;
             padding: 1.5rem;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
+        }
+
+        .sidebar.active { right: 0; }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 1rem;
+        }
+
+        .close-sidebar {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .sidebar-nav a {
+            color: var(--text-main);
+            text-decoration: none;
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: 0.2s;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .sidebar-nav a:hover {
+            background: rgba(0, 85, 255, 0.15);
+            color: var(--accent-blue);
+            border-color: var(--border-color);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            z-index: 900;
+            display: none;
+        }
+
+        .overlay.active { display: block; }
+
+        main {
+            flex: 1;
+            padding: 2rem 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         h1 {
@@ -50,7 +172,6 @@
             border-radius: 16px;
             padding: 1.5rem;
             box-shadow: 0 0 30px rgba(0, 85, 255, 0.1);
-            margin-bottom: 1.5rem;
         }
 
         .table-container {
@@ -65,7 +186,7 @@
         }
 
         th, td {
-            padding: 12px 14px;
+            padding: 14px;
             font-size: 0.85rem;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
@@ -78,9 +199,7 @@
             background: rgba(0, 85, 255, 0.05);
         }
 
-        td {
-            color: var(--text-main);
-        }
+        td { color: var(--text-main); }
 
         .badge-round {
             background: rgba(59, 130, 246, 0.15);
@@ -113,30 +232,57 @@
 </head>
 <body>
 
-    <h1>Partidas Agendadas</h1>
-    <p class="section-desc">Acompanhe todos os confrontos e o status dos jogos da RFO.</p>
+    <header>
+        <div class="logo"><i class="fa-solid fa-shield-halayed"></i> RFO Partidas</div>
+        <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
+    </header>
 
-    <div class="card">
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Competição / Rodada</th>
-                        <th>Confronto</th>
-                        <th>Horário</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody id="publicMatchesTable">
-                    <tr>
-                        <td colspan="4" style="text-align:center; color: var(--text-muted);">Carregando partidas...</td>
-                    </tr>
-                </tbody>
-            </table>
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3>Menu RFO</h3>
+            <button class="close-sidebar" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="sidebar-nav">
+            <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
+            <a href="matches.html"><i class="fa-solid fa-futbol"></i> Partidas</a>
+            <a href="transmissoes.html"><i class="fa-solid fa-video"></i> Transmissões</a>
+            <a href="admin.html"><i class="fa-solid fa-lock"></i> Painel Admin</a>
+            <a href="dono.html"><i class="fa-solid fa-crown"></i> Painel de Dono</a>
         </div>
     </div>
 
+    <main>
+        <h1>Partidas Agendadas</h1>
+        <p class="section-desc">Acompanhe todos os confrontos, horários e status automáticos dos jogos da RFO.</p>
+
+        <div class="card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Competição / Rodada</th>
+                            <th>Confronto</th>
+                            <th>Horário</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="publicMatchesTable">
+                        <tr>
+                            <td colspan="4" style="text-align:center; color: var(--text-muted);">Carregando partidas...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
     <script>
+        function toggleMenu() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('overlay').classList.toggle('active');
+        }
+
         window.addEventListener('DOMContentLoaded', () => {
             loadPublicMatches();
         });
@@ -148,17 +294,31 @@
             table.innerHTML = "";
 
             if (matchesList.length === 0) {
-                table.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Nenhuma partida agendada no momento.</td></tr>`;
+                table.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Nenhuma partida cadastrada no momento.</td></tr>`;
                 return;
             }
 
-            matchesList.forEach(match => {
-                let matchDate = new Date(match.timestamp);
-                let timeFormatted = matchDate.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'}) + ' - ' + matchDate.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+            const now = new Date().getTime();
 
-                let statusText = match.status || "Agendada";
+            matchesList.forEach(match => {
+                let matchTime = match.timestamp;
+                let matchDateObj = new Date(matchTime);
+                let timeFormatted = matchDateObj.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'}) + ' - ' + matchDateObj.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+
+                let statusText = match.status;
+                let diffMinutes = (now - matchTime) / (1000 * 60);
+
+                if (!statusText || statusText === "Agendada") {
+                    if (diffMinutes >= 0 && diffMinutes <= 110) {
+                        statusText = "Ao Vivo";
+                    } else if (diffMinutes > 110) {
+                        statusText = "Encerrada";
+                    } else {
+                        statusText = "Agendada";
+                    }
+                }
+
                 let statusClass = "status-upcoming";
-                
                 if (statusText === "Ao Vivo") statusClass = "status-live";
                 if (statusText === "Encerrada") statusClass = "status-finished";
 
