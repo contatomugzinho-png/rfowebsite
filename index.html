@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Início - RFO</title>
+    <title>Verificação - RFO</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -28,179 +28,59 @@
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
-        }
-
-        /* Navbar e Menu Hambúrguer */
-        header {
-            background: var(--bg-card);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 1.5rem;
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            justify-content: center;
+            padding: 1rem;
         }
 
-        .logo {
-            font-size: 1.2rem;
-            font-weight: 900;
-            color: #fff;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .logo i {
-            color: var(--primary-blue);
-        }
-
-        .menu-btn {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            font-size: 1.2rem;
-            padding: 0.5rem 0.8rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .menu-btn:hover {
-            background: rgba(0, 85, 255, 0.1);
-        }
-
-        /* Menu Lateral Deslizante */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -280px;
-            width: 280px;
-            height: 100%;
-            background: var(--bg-card);
-            border-left: 1px solid var(--border-color);
-            z-index: 1000;
-            transition: right 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem;
-            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
-        }
-
-        .sidebar.active {
-            right: 0;
-        }
-
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 1rem;
-        }
-
-        .close-sidebar {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .sidebar-nav a {
-            color: var(--text-main);
-            text-decoration: none;
-            padding: 0.8rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: 0.2s;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .sidebar-nav a:hover {
-            background: rgba(0, 85, 255, 0.15);
-            color: var(--accent-blue);
-            border-color: var(--border-color);
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(3px);
-            z-index: 900;
-            display: none;
-        }
-
-        .overlay.active {
-            display: block;
-        }
-
-        /* Conteúdo Principal */
-        main {
-            flex: 1;
-            padding: 2rem 1.5rem;
-            max-width: 800px;
-            margin: 0 auto;
-            width: 100%;
-            text-align: center;
-        }
-
-        .hero {
+        .auth-card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
             border-radius: 20px;
-            padding: 3rem 1.5rem;
+            padding: 2.5rem 2rem;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
             box-shadow: 0 0 40px rgba(0, 85, 255, 0.15);
-            margin-top: 2rem;
+        }
+
+        .logo-icon {
+            font-size: 3rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
         }
 
         h1 {
-            font-size: 2.2rem;
+            font-size: 1.6rem;
             font-weight: 900;
-            margin-bottom: 1rem;
-            color: #ffffff;
+            margin-bottom: 0.5rem;
+            color: #fff;
         }
 
         p {
             color: var(--text-muted);
-            font-size: 1rem;
+            font-size: 0.9rem;
             margin-bottom: 2rem;
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
-        .btn-primary {
-            display: inline-block;
+        .btn-start {
+            display: block;
+            width: 100%;
             background: var(--primary-blue);
             color: #fff;
-            padding: 0.8rem 2rem;
+            padding: 0.9rem;
             border-radius: 12px;
             text-decoration: none;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
             transition: 0.2s;
             box-shadow: 0 4px 20px rgba(0, 85, 255, 0.4);
         }
 
-        .btn-primary:hover {
+        .btn-start:hover {
             background: var(--accent-blue);
             transform: translateY(-2px);
         }
@@ -208,41 +88,52 @@
 </head>
 <body>
 
-    <header>
-        <div class="logo"><i class="fa-solid fa-shield-halayed"></i> RFO Management</div>
-        <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
-    </header>
-
-    <!-- Menu Lateral (Hambúrguer) -->
-    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h3>Menu RFO</h3>
-            <button class="close-sidebar" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="sidebar-nav">
-            <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="matches.html"><i class="fa-solid fa-futbol"></i> Partidas</a>
-            <a href="transmissoes.html"><i class="fa-solid fa-video"></i> Transmissões</a>
-            <a href="admin.html"><i class="fa-solid fa-lock"></i> Painel Admin</a>
-            <a href="dono.html"><i class="fa-solid fa-crown"></i> Painel de Dono</a>
-        </div>
+    <div class="auth-card">
+        <div class="logo-icon"><i class="fa-solid fa-shield-halayed"></i></div>
+        <h1>RFO Security</h1>
+        <p id="statusText">Faça a verificação da sua conta do Roblox para acessar o sistema de gerenciamento da liga.</p>
+        
+        <button class="btn-start" id="startBtn" onclick="handleStartAction()">Start</button>
     </div>
 
-    <main>
-        <div class="hero">
-            <h1>Bem-vindo à RFO</h1>
-            <p>Gerencie ligas, acompanhe partidas ao vivo, controle transmissões e gerencie sua organização de forma 100% profissional e automatizada.</p>
-            <a href="matches.html" class="btn-primary">Ver Partidas da Rodada</a>
-        </div>
-    </main>
-
     <script>
-        function toggleMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-            sidebar.classList.toggle('active');
-            overlay.classList.toggle('active');
+        window.addEventListener('DOMContentLoaded', () => {
+            checkVerificationStatus();
+        });
+
+        function checkVerificationStatus() {
+            const isVerified = localStorage.getItem('rfo_roblox_verified') === 'true';
+            const btn = document.getElementById('startBtn');
+            const statusText = document.getElementById('statusText');
+
+            if (isVerified) {
+                statusText.innerText = "Sua conta do Roblox já está verificada com sucesso! Clique em Start para entrar.";
+                btn.innerText = "Start (Entrar)";
+            } else {
+                statusText.innerText = "Clique em Start para iniciar o processo de verificação da sua conta do Roblox.";
+                btn.innerText = "Start (Verificar)";
+            }
+        }
+
+        function handleStartAction() {
+            const isVerified = localStorage.getItem('rfo_roblox_verified') === 'true';
+
+            if (isVerified) {
+                // Já verificado: vai para a página inicial de navegação
+                window.location.href = "home.html";
+            } else {
+                // Simulação do fluxo de verificação do Roblox
+                // Aqui você pode integrar o redirecionamento OAuth real do Roblox se desejar
+                let robloxUser = prompt("Digite seu nome de usuário ou ID do Roblox para verificar:");
+                if (robloxUser && robloxUser.trim() !== "") {
+                    localStorage.setItem('rfo_roblox_verified', 'true');
+                    localStorage.setItem('rfo_roblox_user', robloxUser.trim());
+                    alert("Verificação realizada com sucesso!");
+                    window.location.href = "home.html";
+                } else {
+                    alert("Verificação cancelada ou usuário inválido.");
+                }
+            }
         }
     </script>
 </body>
