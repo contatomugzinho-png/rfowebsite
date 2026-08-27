@@ -13,7 +13,6 @@
             --accent-blue: #3b82f6;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --danger-red: #ef4444;
             --border-color: rgba(0, 85, 255, 0.25);
         }
 
@@ -30,7 +29,10 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            animation: fadeInBody 0.4s ease-in-out;
         }
+
+        @keyframes fadeInBody { from { opacity: 0; } to { opacity: 1; } }
 
         header {
             background: var(--bg-card);
@@ -39,139 +41,54 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
         }
 
-        .logo {
-            font-size: 1.2rem;
-            font-weight: 900;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
+        .logo { font-size: 1.2rem; font-weight: 900; color: #fff; display: flex; align-items: center; gap: 8px; }
         .logo i { color: var(--primary-blue); }
 
-        .menu-btn {
+        .btn-back {
             background: transparent;
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            font-size: 1.2rem;
             padding: 0.5rem 0.8rem;
             border-radius: 8px;
             cursor: pointer;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: -280px;
-            width: 280px;
-            height: 100%;
-            background: var(--bg-card);
-            border-left: 1px solid var(--border-color);
-            z-index: 1000;
-            transition: right 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem;
-            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.8);
-        }
-
-        .sidebar.active { right: 0; }
-
-        .sidebar-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding-bottom: 1rem;
-        }
-
-        .close-sidebar {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            cursor: pointer;
-        }
-
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-        }
-
-        .sidebar-nav a {
-            color: var(--text-main);
             text-decoration: none;
-            padding: 0.8rem 1rem;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 0.9rem;
+            transition: 0.2s;
         }
-
-        .sidebar-nav a:hover {
-            background: rgba(0, 85, 255, 0.15);
-            color: var(--accent-blue);
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(3px);
-            z-index: 900;
-            display: none;
-        }
-
-        .overlay.active { display: block; }
+        .btn-back:hover { background: rgba(0, 85, 255, 0.15); }
 
         main {
             flex: 1;
-            padding: 2rem 1.5rem;
-            max-width: 900px;
+            padding: 2.5rem 1.5rem;
+            max-width: 700px;
             margin: 0 auto;
             width: 100%;
-        }
-
-        h1 {
-            font-size: 1.8rem;
-            font-weight: 900;
-            margin-bottom: 0.3rem;
-            color: #fff;
-        }
-
-        .section-desc {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
         }
 
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 0 30px rgba(0, 85, 255, 0.1);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 0 40px rgba(0, 85, 255, 0.15);
+            animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .form-group {
-            margin-bottom: 1rem;
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+
+        h1 { font-size: 1.8rem; font-weight: 900; margin-bottom: 0.5rem; color: #fff; }
+        h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; color: #fff; display: flex; align-items: center; gap: 8px; }
+        p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem; }
+
+        .form-group { margin-bottom: 1.2rem; }
 
         label {
             display: block;
@@ -183,228 +100,188 @@
             font-weight: 700;
         }
 
-        input, textarea {
+        input {
             width: 100%;
-            padding: 0.8rem;
+            padding: 0.9rem;
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
+            border-radius: 10px;
             color: #fff;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            transition: 0.2s;
         }
 
-        textarea { height: 120px; resize: vertical; }
-
-        input:focus, textarea:focus {
+        input:focus {
             outline: none;
             border-color: var(--accent-blue);
+            box-shadow: 0 0 10px rgba(0, 85, 255, 0.3);
         }
 
-        .btn {
+        .btn-submit {
+            display: block;
+            width: 100%;
             background: var(--primary-blue);
             color: #fff;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 8px;
+            padding: 1rem;
+            border-radius: 12px;
             font-weight: 700;
+            font-size: 1rem;
+            border: none;
             cursor: pointer;
-            transition: 0.2s;
-            width: 100%;
+            margin-top: 1.5rem;
+            transition: 0.3s;
+            box-shadow: 0 4px 20px rgba(0, 85, 255, 0.4);
         }
 
-        .btn:hover { background: var(--accent-blue); }
-
-        .btn-danger { background: var(--danger-red); }
-        .btn-danger:hover { opacity: 0.8; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
+        .btn-submit:hover {
+            background: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 85, 255, 0.6);
         }
 
-        th, td {
-            padding: 12px;
+        .manage-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .manage-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .match-info b { color: #fff; font-size: 0.95rem; }
+        .match-info span { display: block; font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
             font-size: 0.85rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            text-align: left;
+            transition: 0.2s;
         }
 
-        th {
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-size: 0.7rem;
-            letter-spacing: 1px;
-        }
-
-        .auth-container {
-            max-width: 400px;
-            margin: 4rem auto;
-            text-align: center;
+        .btn-delete:hover {
+            background: #ef4444;
+            color: #fff;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo"><i class="fa-solid fa-lock"></i> Painel Admin</div>
-        <button class="menu-btn" onclick="toggleMenu()"><i class="fa-solid fa-bars"></i></button>
+        <div class="logo"><i class="fa-solid fa-lock"></i> RFO Admin</div>
+        <a href="home.html" class="btn-back"><i class="fa-solid fa-arrow-left"></i> Voltar</a>
     </header>
 
-    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
-    <div class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h3>Menu RFO</h3>
-            <button class="close-sidebar" onclick="toggleMenu()"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="sidebar-nav">
-            <a href="index.html"><i class="fa-solid fa-house"></i> Início</a>
-            <a href="matches.html"><i class="fa-solid fa-futbol"></i> Partidas</a>
-            <a href="transmissoes.html"><i class="fa-solid fa-video"></i> Transmissões</a>
-            <a href="admin.html"><i class="fa-solid fa-lock"></i> Painel Admin</a>
-            <a href="dono.html"><i class="fa-solid fa-crown"></i> Painel de Dono</a>
-        </div>
-    </div>
-
     <main>
-        <!-- Tela de Autenticação por E-mail -->
-        <div id="authScreen" class="auth-container card">
-            <h2>Acesso Restrito</h2>
-            <p style="margin: 1rem 0;">Insira seu e-mail cadastrado para acessar o painel administrativo.</p>
+        <!-- Card de Cadastro -->
+        <div class="card">
+            <h1>Painel Administrativo</h1>
+            <p>Cadastre novas partidas oficiais para exibição imediata na liga.</p>
+
             <div class="form-group">
-                <input type="email" id="adminEmailInput" placeholder="seu-email@gmail.com">
+                <label>Categoria / Competição</label>
+                <input type="text" id="matchCategory" placeholder="Ex: Série A - Rodada 1">
             </div>
-            <button class="btn" onclick="verifyAdminLogin()">Entrar</button>
+
+            <div class="form-group">
+                <label>Time Mandante (Home)</label>
+                <input type="text" id="matchHome" placeholder="Nome do time da casa">
+            </div>
+
+            <div class="form-group">
+                <label>Time Visitante (Away)</label>
+                <input type="text" id="matchAway" placeholder="Nome do time visitante">
+            </div>
+
+            <button class="btn-submit" onclick="registerMatch()">Salvar e Registrar Partida</button>
         </div>
 
-        <!-- Conteúdo do Painel Admin (Protegido) -->
-        <div id="adminPanel" style="display: none;">
-            <h1>Gerenciamento de Partidas</h1>
-            <p class="section-desc">Importe dados do Discord ou cadastre partidas manualmente.</p>
-
-            <div class="card">
-                <h3 style="margin-bottom: 1rem;">Importar Anúncio do Discord</h3>
-                <div class="form-group">
-                    <textarea id="discordInput" placeholder="Cole o texto bruto do Discord contendo categorias, rodadas e confrontos..."></textarea>
-                </div>
-                <button class="btn" onclick="parseDiscordData()">Processar e Importar Partidas</button>
+        <!-- Card de Gerenciamento / Exclusão de Partidas -->
+        <div class="card">
+            <h2><i class="fa-solid fa-pen-to-square"></i> Gerenciar Partidas Salvas</h2>
+            <p>Visualize ou remova partidas já cadastradas no sistema.</p>
+            
+            <div class="manage-list" id="manageMatchesList">
+                <!-- Lista injetada via JavaScript -->
             </div>
-
-            <div class="card">
-                <h3 style="margin-bottom: 1rem;">Partidas Cadastradas</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Competição</th>
-                            <th>Confronto</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="adminMatchesTable">
-                        <!-- Preenchido via JS -->
-                    </tbody>
-                </table>
-            </div>
-
-            <button class="btn btn-danger" onclick="logoutAdmin()" style="margin-top: 1rem;">Sair do Painel Admin</button>
         </div>
     </main>
 
     <script>
-        function toggleMenu() {
-            document.getElementById('sidebar').classList.toggle('active');
-            document.getElementById('overlay').classList.toggle('active');
-        }
-
         window.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('rfo_admin_logged') === 'true') {
-                showAdminPanel();
-            }
-        });
-
-        function verifyAdminLogin() {
-            const email = document.getElementById('adminEmailInput').value.trim().toLowerCase();
-            const staffList = JSON.parse(localStorage.getItem('rfo_staff')) || [
-                { email: "contatomugzinho@gmail.com", role: "Dono" }
-            ];
-
-            const member = staffList.find(s => s.email === email && (s.role === 'Dono' || s.role === 'Administrador'));
-
-            if (member) {
-                localStorage.setItem('rfo_admin_logged', 'true');
-                showAdminPanel();
-            } else {
-                alert("Acesso negado! Este e-mail não possui permissão de Administrador.");
-            }
-        }
-
-        function logoutAdmin() {
-            localStorage.removeItem('rfo_admin_logged');
-            document.getElementById('adminPanel').style.display = 'none';
-            document.getElementById('authScreen').style.display = 'block';
-        }
-
-        function showAdminPanel() {
-            document.getElementById('authScreen').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'block';
-            loadAdminMatches();
-        }
-
-        function parseDiscordData() {
-            const text = document.getElementById('discordInput').value;
-            let matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
-            
-            // Parser simples por linhas para exemplo estruturado
-            const lines = text.split('\n');
-            let currentCategory = "Liga Principal";
-            let currentRound = "Rodada 1";
-
-            lines.forEach(line => {
-                if (line.includes('**')) {
-                    currentCategory = line.replace(/\*\*/g, '').trim();
-                }
-                if (line.toLowerCase().includes('rodada')) {
-                    currentRound = line.trim();
-                }
-                if (line.includes(' vs ') || line.includes(' x ')) {
-                    let parts = line.split(/ vs | x /i);
-                    if (parts.length >= 2) {
-                        matches.push({
-                            category: currentCategory,
-                            round: currentRound,
-                            home: parts[0].trim(),
-                            away: parts[1].trim(),
-                            timestamp: Date.now() + 3600000, // +1 hora por padrão
-                            status: "Agendada"
-                        });
-                    }
-                }
-            });
-
-            localStorage.setItem('rfo_matches', JSON.stringify(matches));
-            alert("Partidas importadas com sucesso!");
-            document.getElementById('discordInput').value = "";
-            loadAdminMatches();
-        }
-
-        function loadAdminMatches() {
-            const tbody = document.getElementById('adminMatchesTable');
-            let matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
-            tbody.innerHTML = "";
-
-            if (matches.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var(--text-muted);">Nenhuma partida cadastrada.</td></tr>`;
+            // Verifica se passou pela autenticação do Roblox
+            if (localStorage.getItem('rfo_roblox_verified') !== 'true') {
+                alert("Acesso negado! Conecte sua conta do Roblox primeiro.");
+                window.location.href = "index.html";
                 return;
             }
 
+            renderManageList();
+        });
+
+        function registerMatch() {
+            const category = document.getElementById('matchCategory').value.trim();
+            const home = document.getElementById('matchHome').value.trim();
+            const away = document.getElementById('matchAway').value.trim();
+
+            if (!category || !home || !away) {
+                alert("Por favor, preencha todos os campos da partida!");
+                return;
+            }
+
+            let matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
+
+            matches.push({
+                category: category,
+                home: home,
+                away: away,
+                status: "Agendado"
+            });
+
+            localStorage.setItem('rfo_matches', JSON.stringify(matches));
+
+            alert("Partida cadastrada com sucesso!");
+            
+            document.getElementById('matchCategory').value = "";
+            document.getElementById('matchHome').value = "";
+            document.getElementById('matchAway').value = "";
+
+            renderManageList();
+        }
+
+        function renderManageList() {
+            const listContainer = document.getElementById('manageMatchesList');
+            let matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
+
+            if (matches.length === 0) {
+                listContainer.innerHTML = `<p style="color: var(--text-muted); text-align: center; margin: 0;">Nenhuma partida cadastrada para gerenciar.</p>`;
+                return;
+            }
+
+            listContainer.innerHTML = "";
+
             matches.forEach((match, index) => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td><b>${match.category}</b><br><small style="color:var(--text-muted);">${match.round}</small></td>
-                        <td>${match.home} vs ${match.away}</td>
-                        <td><button class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size:0.75rem; width:auto;" onclick="deleteMatch(${index})">Excluir</button></td>
-                    </tr>
+                const item = document.createElement('div');
+                item.className = 'manage-item';
+                item.innerHTML = `
+                    <div class="match-info">
+                        <b>${match.home} vs ${match.away}</b>
+                        <span>${match.category}</span>
+                    </div>
+                    <button class="btn-delete" onclick="deleteMatch(${index})"><i class="fa-solid fa-trash"></i> Excluir</button>
                 `;
+                listContainer.appendChild(item);
             });
         }
 
@@ -412,7 +289,7 @@
             let matches = JSON.parse(localStorage.getItem('rfo_matches')) || [];
             matches.splice(index, 1);
             localStorage.setItem('rfo_matches', JSON.stringify(matches));
-            loadAdminMatches();
+            renderManageList();
         }
     </script>
 </body>
