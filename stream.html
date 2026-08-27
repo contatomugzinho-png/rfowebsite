@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transmissão RFO - Gravação de Tela</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-deep: #030712;
+            --bg-card: #0b1120;
+            --primary-blue: #0055ff;
+            --accent-blue: #3b82f6;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(0, 85, 255, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 0 40px rgba(0, 85, 255, 0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        h1 { font-size: 1.5rem; font-weight: 900; color: #fff; display: flex; align-items: center; gap: 10px; }
+        h1 i { color: var(--primary-blue); }
+
+        p { color: var(--text-muted); font-size: 0.9rem; }
+
+        .video-box {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #000;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .placeholder-text {
+            position: absolute;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.3s;
+        }
+
+        .btn-start { background: var(--primary-blue); color: #fff; box-shadow: 0 4px 15px rgba(0, 85, 255, 0.4); }
+        .btn-start:hover { background: var(--accent-blue); }
+
+        .btn-stop { background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.4); display: none; }
+        .btn-stop:hover { background: #ef4444; color: #fff; }
+
+        .btn-download { background: rgba(16, 185, 129, 0.2); color: #10b981; border: 1px solid rgba(10, 185, 129, 0.4); display: none; text-decoration: none; }
+        .btn-download:hover { background: #10b981; color: #fff; }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-badge.active { background: rgba(16, 185, 129, 0.1); color: #10b981; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1><i class="fa-solid fa-tower-broadcast"></i> Transmissão e Gravação de Tela</h1>
+            <div id="statusBadge" class="status-badge"><div class="status-dot"></div> Offline</div>
+        </div>
+        <p>Compartilhe a aba do jogo ou sua tela inteira para gravar e transmitir a partida diretamente pelo site da RFO.</p>
+
+        <div class="video-box">
+            <div id="placeholder" class="placeholder-text">
+                <i class="fa-solid fa-desktop" style="font-size: 2rem;"></i>
+                Nenhuma tela compartilhada no momento
+            </div>
+            <video id="previewVideo" autoplay muted playsinline></video>
+        </div>
+
+        <div class="controls">
+            <button id="btnStart" class="btn btn-start" onclick="startRecording()"><i class="fa-solid fa-play"></i> Iniciar Transmissão/Gravação</button>
+            <button id="btnStop" class="btn btn-stop" onclick="stopRecording()"><i class="fa-solid fa-stop"></i> Parar Gravação</button>
+            <a id="btnDownload" class="btn btn-download" download="partida-rfo.webm"><i class="fa-solid fa-download"></i> Baixar Gravação (.webm)</a>
+        </div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let recordedChunks = [];
+        let stream;
+
+        const previewVideo = document.getElementById('previewVideo');
+        const placeholder = document.getElementById('placeholder');
+        const btnStart = document.getElementById('btnStart');
+        const btnStop = document.getElementById('btnStop');
+        const btnDownload = document.getElementById('btnDownload');
+        const statusBadge = document.getElementById('statusBadge');
+
+        async function startRecording() {
+            try {
+                // Solicita ao navegador a captura de tela (janela, aba ou tela inteira) com áudio opcional
+                stream = await navigator.mediaDevices.getDisplayMedia({
+                    video: { mediaSource: "screen", frameRate: 60 },
+                    audio: true
+                });
+
+                // Mostra o preview ao vivo na tag <video>
+                previewVideo.srcObject = stream;
+                placeholder.style.display = 'none';
+
+                recordedChunks = [];
+                mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        recordedChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                    const videoUrl = URL.createObjectURL(blob);
+                    btnDownload.href = videoUrl;
+                    btnDownload.style.display = 'flex';
+                };
+
+                // Se o usuário clicar no botão "Parar compartilhamento" nativo do navegador
+                stream.getVideoTracks()[0].onended = () => {
+                    stopRecording();
+                };
+
+                mediaRecorder.start();
+
+                // Atualiza os botões e status
+                btnStart.style.display = 'none';
+                btnStop.style.display = 'flex';
+                btnDownload.style.display = 'none';
+                statusBadge.className = 'status-badge active';
+                statusBadge.innerHTML = '<div class="status-dot"></div> Ao Vivo / Gravando';
+
+            } catch (error) {
+                console.error("Erro ao capturar tela:", error);
+                alert("Você cancelou o compartilhamento ou o navegador bloqueou o recurso.");
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== "inactive") {
+                mediaRecorder.stop();
+            }
+
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+            }
+
+            previewVideo.srcObject = null;
+            placeholder.style.display = 'flex';
+
+            // Reseta os botões
+            btnStart.style.display = 'flex';
+            btnStop.style.display = 'none';
+            statusBadge.className = 'status-badge';
+            statusBadge.innerHTML = '<div class="status-dot"></div> Offline';
+        }
+    </script>
+</body>
+</html>
