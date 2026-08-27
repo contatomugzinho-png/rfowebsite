@@ -132,30 +132,23 @@
     </div>
 
     <script>
-        // CONFIGURAÇÃO DO SEU CLIENT ID DO ROBLOX OAUTH
+        // SEU CLIENT ID DO ROBLOX INSERIDO AQUI
         const ROBLOX_CLIENT_ID = "1789859421050070897"; 
-        const REDIRECT_URI = window.location.origin + window.location.pathname; // URL atual de retorno
+        const REDIRECT_URI = window.location.origin + window.location.pathname;
 
         window.addEventListener('DOMContentLoaded', () => {
             handleOAuthCallback();
             checkVerificationStatus();
         });
 
-        // Verifica se o Roblox redirecionou de volta com o código de autorização na URL
         function handleOAuthCallback() {
             const urlParams = new URLSearchParams(window.location.search);
             const code = urlParams.get('code');
 
             if (code) {
-                // Aqui o Roblox retornou o código com sucesso. 
-                // Salvamos o estado como verificado no navegador:
                 localStorage.setItem('rfo_roblox_verified', 'true');
                 localStorage.setItem('rfo_roblox_code', code);
-                
-                // Limpa a URL para remover o parâmetro 'code'
                 window.history.replaceState({}, document.title, window.location.pathname);
-                
-                // Redireciona para a home
                 window.location.href = "home.html";
             }
         }
@@ -166,10 +159,10 @@
             const statusText = document.getElementById('statusText');
 
             if (isVerified) {
-                statusText.innerText = "Sua conta do Roblox já está verificada e vinculada! Clique em Start para entrar no painel.";
+                statusText.innerText = "Sua conta do Roblox já está verificada! Clique em Start para entrar no painel.";
                 btn.innerText = "Start (Entrar)";
             } else {
-                statusText.innerText = "Clique em Start para fazer login com a sua conta do Roblox através do sistema OAuth.";
+                statusText.innerText = "Clique em Start para fazer login com a sua conta do Roblox.";
                 btn.innerText = "Start (Verificar Roblox)";
             }
         }
@@ -178,22 +171,9 @@
             const isVerified = localStorage.getItem('rfo_roblox_verified') === 'true';
 
             if (isVerified) {
-                // Se já estiver verificado, vai direto para a navegação principal
                 window.location.href = "home.html";
             } else {
-                // Se não estiver verificado, redireciona para a página de autorização oficial do Roblox OAuth
-                if (ROBLOX_CLIENT_ID === "SEU_CLIENT_ID_AQUI") {
-                    alert("Atenção: Por favor, substitua 'SEU_CLIENT_ID_AQUI' no código pelo Client ID real da sua aplicação criada no Portal de Desenvolvedores do Roblox!");
-                    
-                    // Simulação de fallback caso o usuário queira testar sem configurar o Client ID ainda
-                    if (confirm("Deseja simular a verificação do Roblox para testes locais?")) {
-                        localStorage.setItem('rfo_roblox_verified', 'true');
-                        localStorage.setItem('rfo_roblox_user', 'RobloxUser_Test');
-                        window.location.href = "home.html";
-                    }
-                    return;
-                }
-
+                // Redirecionamento oficial para o OAuth do Roblox
                 const robloxOAuthUrl = `https://apis.roblox.com/oauth/v1/authorize?client_id=${ROBLOX_CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=openid+profile`;
                 window.location.href = robloxOAuthUrl;
             }
